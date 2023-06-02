@@ -1,10 +1,11 @@
 package com.aadit.wallpapermanager;
 
-import android.annotation.SuppressLint;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.os.Bundle;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -57,9 +58,11 @@ public class MainActivity extends AppCompatActivity {
         schedule = new Schedule(MainActivity.this, this);
         current = schedule.getCurrentWallpaper();
         imageView1.setImageBitmap(current);
+        button4.setEnabled(false);
 
 
 
+        //Select Image
         button0.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,21 +70,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        //Start Schedule
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                button.setEnabled(false);
+                button.setEnabled(true);
                 try {
                     schedule.runner=true;
-                    schedule.setWallpaper(textView6, button, imageView1);
+                    schedule.setWallpaper(textView6, button,button4, imageView1);
                     schedule.thread1.start();
 
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    Toast.makeText(MainActivity.this, "There has been an error setting the wallpaper", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
+        //Set WP
         button1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -93,27 +99,32 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //Start Time
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 schedule.buttonName = "start";
                 schedule.timePicker(textView4);
                 schedule.runner=true;
             }
 
         });
+        //End time
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 schedule.buttonName = "end";
                 schedule.timePicker(textView5);
                 schedule.runner=true;
-
+                button4.setEnabled(true);
             }
 
         });
+        //Stop
         button4.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
+
             @Override
             public void onClick(View v) {
                 schedule.runner=false;
@@ -147,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        current = schedule.getCurrentWallpaper();
 
         if (requestCode == schedule.REQUEST_IMAGE_SELECT && resultCode == RESULT_OK) {
             Uri imageUri = data.getData();
@@ -154,9 +166,9 @@ public class MainActivity extends AppCompatActivity {
             // Start the image cropping activity
             CropImage.activity(imageUri)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(current.getWidth(), current.getHeight()) // Set the aspect ratio using bitmap dimensions
+                    .setAspectRatio(9,16) // Set the aspect ratio using bitmap dimensions
                     .setCropShape(CropImageView.CropShape.RECTANGLE) // Set the cropping shape to rectangle
-
+                    .setRequestedSize(current.getWidth(), current.getHeight())
                     .setFixAspectRatio(true) // Lock the aspect ratio
                     .start(this);
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {

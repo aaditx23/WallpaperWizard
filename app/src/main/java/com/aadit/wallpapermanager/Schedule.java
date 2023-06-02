@@ -131,8 +131,8 @@ public class Schedule {
     }
 
     public void setWallpaper(TextView status,
-                             Button btn, ImageView previous) throws IOException, InterruptedException {
-
+                             Button btn, Button stop, ImageView previous) throws IOException, InterruptedException {
+        stop.setEnabled(true);
         Bitmap current = getCurrentWallpaper();
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(context.getApplicationContext());
         final int count = getTimeDifferenceFromCurrent(sHour, sMinute);
