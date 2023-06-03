@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 button.setEnabled(true);
                 try {
                     schedule.runner=true;
-                    schedule.setWallpaper(textView6, button,button4, imageView1);
+                    schedule.setWallpaper(textView6, button,button4,button2, button3, button1, imageView1);
                     schedule.thread1.start();
 
                 } catch (Exception e) {
@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 schedule.eMinute = 0;
                 textView4.setText("00 : 00");
                 textView5.setText("00 : 00");
+                button4.setEnabled(false);
             }
         });
     }

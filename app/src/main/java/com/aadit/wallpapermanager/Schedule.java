@@ -131,18 +131,12 @@ public class Schedule {
     }
 
     public void setWallpaper(TextView status,
-                             Button btn, Button stop, ImageView previous) throws IOException, InterruptedException {
+                             Button btn, Button stop, Button start, Button end, Button set, ImageView previous) throws IOException, InterruptedException {
         stop.setEnabled(true);
         Bitmap current = getCurrentWallpaper();
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(context.getApplicationContext());
         final int count = getTimeDifferenceFromCurrent(sHour, sMinute);
-        if (count==0){
-            Toast.makeText(activity, "Please select proper time interval." , Toast.LENGTH_SHORT).show();
-        }
         final int duration = getTimeDifference(sHour, eHour, sMinute, eMinute);
-        if (duration==0){
-            Toast.makeText(activity, "Please select longer interval", Toast.LENGTH_SHORT).show();
-        }
         status.setText(("Countdown: "+count));
         thread1 = new Thread(new Runnable() {
             @Override
@@ -155,7 +149,12 @@ public class Schedule {
                             final int finalCountDown = countDown;
                             activity.runOnUiThread(new Runnable() {
                                 @Override
-                                public void run() {status.setText("Countdown: " + finalCountDown);
+                                public void run() {
+                                    start.setEnabled(false);
+                                    end.setEnabled(false);
+                                    set.setEnabled(false);
+
+                                    status.setText("Countdown: " + finalCountDown);
                                 }
                             });
                             Thread.sleep(1000);
@@ -203,7 +202,19 @@ public class Schedule {
                             @Override
                             public void run() {
                                 btn.setEnabled(true);
-                                if(!runner) status.setText("Aborted");
+                                start.setEnabled(true);
+                                end.setEnabled(true);
+                                set.setEnabled(true);
+                                stop.setEnabled(false);
+                                if(!runner) {
+                                    status.setText("Aborted");
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                    status.setText("Status");
+                                }
                                 else status.setText("Task Complete");
                             }
                         });
