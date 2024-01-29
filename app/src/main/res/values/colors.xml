@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="paletteYellow">#F6F7A9</color>
+    <color name="paletteGreen">#5EC5D4</color>
+    <color name="paletteLightPurple">#A782EC</color>
+    <color name="paletteDarkPurple">#710096</color>
+    <color name="paletteNavyBlue">#06114F</color>
+
+    <color name="palette2DarkPurple1">#3D246C</color>
+    <color name="palette2DarkPurple2">#5C4B99</color>
+    <color name="palette2DarkPurple3">#9F91CC</color>
+    <color name="palette2Skin">#FFDBC3</color>
+    <color name="palette2Plum">#5F0F40</color>
+    <color name="palette2DarkRed">#9A031E</color>
+
+    <color name="palette3paste">#D2FAFB</color>
+    <color name="palette3pink">#FE346E</color>
+    <color name="palette3violet1">#512B58</color>
+    <color name="palette3violet2">#2C003E</color>
+
+    <color name="palette4orange">#D62828</color>
+    <color name="palette4green">#1B7979</color>
+    <color name="palette4violet">#61346B</color>
+    <color name="palette4hotpink">#74006F</color>
+    <color name="palette4lightpink">#E6A1D7</color>
+</resources>
