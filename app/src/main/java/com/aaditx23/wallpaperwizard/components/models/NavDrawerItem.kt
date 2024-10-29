@@ -8,11 +8,13 @@ import androidx.compose.material.icons.filled.FastForward
 import androidx.compose.material.icons.filled.GroupWork
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SupervisedUserCircle
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Apartment
 import androidx.compose.material.icons.outlined.FastForward
 import androidx.compose.material.icons.outlined.GroupWork
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.SupervisedUserCircle
+import androidx.compose.material.icons.outlined.Timer
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class NavDrawerItem(
@@ -27,6 +29,11 @@ sealed class NavDrawerItem(
         unselectedIcon = Icons.Outlined.FastForward,
         title = "Quick Set",
     )
+    object Schedule: NavDrawerItem(
+        selectedIcon = Icons.Filled.Timer,
+        unselectedIcon = Icons.Outlined.Timer,
+        title = "Schedule",
+    )
 
     object Divider: NavDrawerItem(
         title = "Divider",
@@ -35,7 +42,8 @@ sealed class NavDrawerItem(
 
     companion object{
         val navDrawerItems = listOf(
-            QuickSet
+            QuickSet,
+            Schedule
         )
     }
 }

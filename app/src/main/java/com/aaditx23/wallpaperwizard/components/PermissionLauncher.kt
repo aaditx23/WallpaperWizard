@@ -1,7 +1,10 @@
 package com.aaditx23.wallpaperwizard.components
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Environment
+import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -63,4 +66,12 @@ fun multiplePermissionLauncher(context: Context, permissions: List<String>): Boo
     }
 
     return allPermissionsGranted
+}
+
+
+fun requestAllFilesAccess(context: Context) {
+    if (!Environment.isExternalStorageManager()) {
+        val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+        context.startActivity(intent)
+    }
 }

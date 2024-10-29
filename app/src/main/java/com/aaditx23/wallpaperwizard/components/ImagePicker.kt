@@ -30,6 +30,7 @@ import java.io.InputStream
 
 @Composable
 fun ImagePicker(onImagePicked: (image: Bitmap) -> Unit){
+    println("Launching")
     var selectedImageBitmap by remember {
         mutableStateOf<Bitmap?>(null)
     }
@@ -39,13 +40,13 @@ fun ImagePicker(onImagePicked: (image: Bitmap) -> Unit){
     }
     val context = LocalContext.current
     var hasImagePermission by remember{ mutableStateOf(false) }
-    val permission =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
-        else Manifest.permission.READ_EXTERNAL_STORAGE
+    val permission = Manifest.permission.READ_MEDIA_IMAGES
+
     hasImagePermission = permissionLauncher(
         context = context,
         permission = permission
     )
+    println(hasImagePermission)
 
     val cropLauncher = rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
         if (result.isSuccessful){
@@ -64,10 +65,8 @@ fun ImagePicker(onImagePicked: (image: Bitmap) -> Unit){
     ) { uri: Uri? ->
         val cropOptions = CropImageContractOptions(uri, CropImageOptions().apply {
             fixAspectRatio = true
-            aspectRatioX = 1
-            aspectRatioY = 1
-            outputRequestWidth = 150
-            outputRequestHeight = 150
+            aspectRatioX = 3
+            aspectRatioY = 4
             outputCompressQuality = 100
             outputCompressFormat = Bitmap.CompressFormat.JPEG
         })
@@ -83,7 +82,7 @@ fun ImagePicker(onImagePicked: (image: Bitmap) -> Unit){
     }
 }
 
-private fun createBitmapFromUri(context: Context, uri: Uri): Bitmap {
+fun createBitmapFromUri(context: Context, uri: Uri): Bitmap {
     val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
     return BitmapFactory.decodeStream(inputStream)
 }

@@ -32,6 +32,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.currentBackStackEntryAsState
 
 import com.aaditx23.wallpaperwizard.components.CircularLoadingBasic
+//import com.aaditx23.wallpaperwizard.components.ImageCropperExample
+import com.aaditx23.wallpaperwizard.components.ImagePicker
+
 import com.aaditx23.wallpaperwizard.components.models.NavDrawerItem.Companion.navDrawerItems
 import com.aaditx23.wallpaperwizard.components.multiplePermissionLauncher
 import com.aaditx23.wallpaperwizard.components.permissionLauncher
@@ -72,6 +75,7 @@ fun Main(){
 //    }
 
     requestAllFilesAccess(context)
+    permissionLauncher(context, Manifest.permission.READ_MEDIA_IMAGES)
 //    multiplePermissionLauncher(context, listOf(
 //        Manifest.permission.MANAGE_EXTERNAL_STORAGE,
 //
@@ -122,7 +126,10 @@ fun Main(){
             NavHost(navController = navController, startDestination = "Quick Set") {
                 // Routes
                 composable("Quick Set") {
-                    CurrentWallpaperImage()
+                    QuickSetScreen()
+                }
+                composable("Schedule") {
+                    Schedule()
                 }
 
             }
