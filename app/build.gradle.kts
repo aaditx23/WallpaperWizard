@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.aaditx23.wallpaperwizard"
-        minSdk = 29
+        minSdk = 34
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -56,4 +56,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation("com.github.CanHub:Android-Image-Cropper:4.0.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+
+    implementation("androidx.compose.material:material-icons-extended:1.6.5")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 }
