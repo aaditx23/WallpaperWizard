@@ -29,10 +29,8 @@ fun permissionLauncher(context: Context, permission: String): Boolean{
                 permission
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            // Fine location permission granted
             hasPermission = true
         } else {
-            // Request location permission
             permissionLauncher.launch(permission)
         }
     }
@@ -40,34 +38,12 @@ fun permissionLauncher(context: Context, permission: String): Boolean{
     return hasPermission
 }
 
-@Composable
-fun multiplePermissionLauncher(context: Context, permissions: List<String>): Boolean {
-    var allPermissionsGranted by remember { mutableStateOf(false) }
-
-    // Launcher to request multiple permissions
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissionsResult: Map<String, Boolean> ->
-        allPermissionsGranted = permissionsResult.values.all { it }
-    }
-
-    LaunchedEffect(Unit) {
-        // Check if all permissions are granted
-        val hasAllPermissions = permissions.all { permission ->
-            ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-        }
-
-        if (hasAllPermissions) {
-            allPermissionsGranted = true
-        } else {
-            // Request multiple permissions
-            permissionLauncher.launch(permissions.toTypedArray())
-        }
-    }
-
-    return allPermissionsGranted
+fun checkPermission(context: Context, permission: String): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
 }
-
 
 fun requestAllFilesAccess(context: Context) {
     if (!Environment.isExternalStorageManager()) {

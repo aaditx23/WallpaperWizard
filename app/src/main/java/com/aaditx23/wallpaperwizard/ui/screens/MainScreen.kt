@@ -23,27 +23,19 @@ import androidx.navigation.compose.rememberNavController
 import com.aaditx23.wallpaperwizard.components.NavDrawer
 import com.aaditx23.wallpaperwizard.components.TopActionBar
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+
 import androidx.compose.ui.platform.LocalContext
 
 import androidx.navigation.compose.currentBackStackEntryAsState
 
-import com.aaditx23.wallpaperwizard.components.CircularLoadingBasic
-//import com.aaditx23.wallpaperwizard.components.ImageCropperExample
-import com.aaditx23.wallpaperwizard.components.ImagePicker
+import com.aaditx23.wallpaperwizard.components.checkPermission
 
 import com.aaditx23.wallpaperwizard.components.models.NavDrawerItem.Companion.navDrawerItems
-import com.aaditx23.wallpaperwizard.components.multiplePermissionLauncher
+
 import com.aaditx23.wallpaperwizard.components.permissionLauncher
 import com.aaditx23.wallpaperwizard.components.requestAllFilesAccess
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Main(){
@@ -60,6 +52,10 @@ fun Main(){
     var scrollState = rememberScrollState()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val context = LocalContext.current
+    val permissions = listOf(
+        Manifest.permission.MANAGE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_MEDIA_IMAGES
+    )
 
 
 
@@ -74,12 +70,13 @@ fun Main(){
 //        }
 //    }
 
-    requestAllFilesAccess(context)
-    permissionLauncher(context, Manifest.permission.READ_MEDIA_IMAGES)
-//    multiplePermissionLauncher(context, listOf(
-//        Manifest.permission.MANAGE_EXTERNAL_STORAGE,
-//
-//    ))
+    if(!checkPermission(context, permissions[0])){
+        requestAllFilesAccess(context)
+    }
+    if(!checkPermission(context, permissions[1])){
+        permissionLauncher(context, Manifest.permission.READ_MEDIA_IMAGES)
+    }
+
 
     //-------------------------------
 
@@ -136,12 +133,6 @@ fun Main(){
         }
 
     }
-//    if (isSessionReady){
-//
-//    }
-//    else{
-//        CircularLoadingBasic("Please wait...")
-//    }
 }
 
 
