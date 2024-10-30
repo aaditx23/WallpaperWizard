@@ -32,8 +32,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -67,7 +67,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.5")
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
-    implementation("io.realm.kotlin:library-base:1.16.0")
+    implementation("io.realm.kotlin:library-base:2.0.0")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
     implementation("com.google.dagger:hilt-android:2.49")

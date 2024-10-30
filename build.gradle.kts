@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
 
-    id("io.realm.kotlin") version ("1.16.0") apply false
+    id("io.realm.kotlin") version ("2.0.0") apply false
     id("com.google.dagger.hilt.android") version ("2.49") apply false
-    id("com.google.devtools.ksp") version "1.9.23-1.0.20" apply false
+    id("com.google.devtools.ksp") version "2.0.0-1.0.24" apply false
 }
