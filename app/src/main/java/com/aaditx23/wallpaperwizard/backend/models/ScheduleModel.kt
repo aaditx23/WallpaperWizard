@@ -12,8 +12,7 @@ class ScheduleModel: RealmObject{
     var prevLockScreen: String? = null
     var homeScreen: String? = null
     var lockScreen: String? = null
-    var startDate: String? = null
-    var endDate: String? = null
+    var repeatDays: String? = null
     var startTime: String? = null
     var endTime: String? = null
     var repeat: String? = null
