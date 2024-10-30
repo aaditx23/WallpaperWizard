@@ -16,12 +16,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.aaditx23.wallpaperwizard.components.ImagePicker
+import com.aaditx23.wallpaperwizard.components.createFolder
+import com.aaditx23.wallpaperwizard.components.deleteFolder
 import com.aaditx23.wallpaperwizard.components.getCurrentWallpaperDrawable
+import com.aaditx23.wallpaperwizard.components.listFolders
 
 
 @Composable
@@ -89,11 +93,17 @@ fun CurrentWallpaper() {
 
     // Display the wallpaper if available
     wallpaperBitmap?.let { bitmap ->
-        Image(
-            bitmap = bitmap.asImageBitmap(),
-            contentDescription = "Current Wallpaper",
-            modifier = Modifier
-                .size(200.dp)
-        )
+        ElevatedCard(
+            onClick = {
+
+            }
+        ) {
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = "Current Wallpaper",
+                modifier = Modifier
+                    .size(200.dp)
+            )
+        }
     }
 }
