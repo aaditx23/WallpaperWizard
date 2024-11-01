@@ -44,16 +44,16 @@ import com.aaditx23.wallpaperwizard.ui.theme.buttonThumbTint
 //}
 
 @Composable
-fun LockToggle(set: (Boolean) -> Unit) {
-    var check by remember { mutableStateOf(false) }
+fun LockToggle(
+    hasLock: Boolean = false,
+    set: (Boolean) -> Unit
 
+) {
+    var check by remember { mutableStateOf(hasLock) }
+    println("CHeck $check")
     Box {
-        // Background icon that shows when checked
-
-
-        // The Switch component
         Switch(
-            checked = check,
+            checked = hasLock,
             onCheckedChange = {
                 check = it
                 set(it)

@@ -151,9 +151,11 @@ fun Schedule(){
                                 else "Home",
                                 fontSize = 15.sp
                             )
-                            LockToggle { check ->
-                                showLockScreen = check
-                            }
+                            LockToggle(
+                                set = { check ->
+                                    showLockScreen = check
+                                }
+                            )
                             Spacer(modifier = Modifier.height(30.dp))
                             TimeField("Start") { time ->
                                 startTime = time

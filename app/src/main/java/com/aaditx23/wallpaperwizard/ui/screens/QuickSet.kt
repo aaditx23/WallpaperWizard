@@ -53,6 +53,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     var selectedHomeScreen by remember { mutableStateOf<Bitmap?>(null) }
     var selectedLockScreen by remember { mutableStateOf<Bitmap?>(null) }
     var showLockScreen by remember { mutableStateOf(false) }
+    var hasLockScreen by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val id = quickSetItem._id.toHexString()
@@ -70,18 +71,21 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     selectedHomeScreen = JpgToBitmapAsync(context, "qs/$id/home.jpg")
                 }
                 if(fileList.contains("lock.jpg")){
-                    selectedHomeScreen = JpgToBitmapAsync(context, "qs/$id/lock.jpg")
+                    selectedLockScreen = JpgToBitmapAsync(context, "qs/$id/lock.jpg")
+                    showLockScreen = true
                 }
             }
             println(listSubfolders(context, "qs"))
         }
     }
+    println("ShowLockScreen $showLockScreen")
 
     ElevatedCard(
         onClick = {},
         modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 10.dp),
-        colors = CardDefaults.cardColors(palette6LightIndigo)
+        colors = CardDefaults.cardColors(palette6LightIndigo),
+        elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Column(
             modifier = Modifier
@@ -91,9 +95,15 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     .fillMaxWidth(),
                 contentAlignment = Alignment.TopCenter
             ) {
-                LockToggle { toggle ->
-                    showLockScreen = toggle
-                }
+                LockToggle(
+                    hasLock = showLockScreen,
+                    set = { toggle ->
+                        showLockScreen = toggle
+                        if(!toggle && selectedLockScreen != null){
+
+                        }
+                    }
+                )
             }
             Row {
                 SelectedWallpaper(
@@ -110,7 +120,8 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                             selectedLockScreen = image
                             saveImage(context, image, "qs/$id", "lock")
                         },
-                        text = "Selected Lock"
+                        text = "Selected Lock",
+                        loadedImage = selectedLockScreen
                     )
                 }
 
@@ -126,15 +137,22 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     ) {
                         scope.launch {
                             if(selectedHomeScreen != null){
-                                val result = async{
+                                val resultHome = async{
                                     setWallpaper(
                                         context = context,
                                         bitmap = selectedHomeScreen!!,
                                         index = 0
                                     )
                                 }.await()
+                                val resultLock = async{
+                                    setWallpaper(
+                                        context = context,
+                                        bitmap = selectedLockScreen!!,
+                                        index = 1
+                                    )
+                                }.await()
                                 withContext(Dispatchers.Main){
-                                    if (result){
+                                    if (resultHome && resultLock){
                                         Toast.makeText(context, "Wallpapers set successfully", Toast.LENGTH_SHORT).show()
                                     }
                                     else{
