@@ -43,7 +43,16 @@ import com.aaditx23.wallpaperwizard.components.listFilesIn
 import com.aaditx23.wallpaperwizard.components.listSubfolders
 import com.aaditx23.wallpaperwizard.components.saveImage
 import com.aaditx23.wallpaperwizard.components.setWallpaper
+import com.aaditx23.wallpaperwizard.ui.theme.palette2DarkPurple1
+import com.aaditx23.wallpaperwizard.ui.theme.palette2DarkPurple2
+import com.aaditx23.wallpaperwizard.ui.theme.palette2DarkPurple3
+import com.aaditx23.wallpaperwizard.ui.theme.palette2Plum
+import com.aaditx23.wallpaperwizard.ui.theme.palette2Skin
 import com.aaditx23.wallpaperwizard.ui.theme.palette6LightIndigo
+import com.aaditx23.wallpaperwizard.ui.theme.palette6MagicMint
+import com.aaditx23.wallpaperwizard.ui.theme.palette7Paste1
+import com.aaditx23.wallpaperwizard.ui.theme.paletteBlue2
+import com.aaditx23.wallpaperwizard.ui.theme.paletteBlue9
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -84,7 +93,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
         onClick = {},
         modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 10.dp),
-        colors = CardDefaults.cardColors(palette6LightIndigo),
+        colors = CardDefaults.cardColors(palette7Paste1),
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
         Column(
@@ -146,7 +155,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                 ) {
                     CardButton(
                         text = "Set Wallpaper(s)",
-                        buttonColor = MaterialTheme.colorScheme.primary
+                        buttonColor = paletteBlue2
                     ) {
                         scope.launch {
                             if(selectedHomeScreen != null){
@@ -178,7 +187,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     Spacer(modifier = Modifier.height(10.dp))
                     CardButton(
                         text = "Delete QuickSet",
-                        buttonColor = MaterialTheme.colorScheme.error
+                        buttonColor = palette2Plum
                     ) {
                         scope.launch {
                             qsVM.deleteQuickSet(quickSetItem._id)

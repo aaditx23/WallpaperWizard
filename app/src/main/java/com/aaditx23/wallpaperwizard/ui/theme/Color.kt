@@ -12,6 +12,13 @@ val Pink40 = Color(0xFF7D5260)
 
 val buttonThumbTint = Color(0xFF001a41)
 
+val palette2DarkPurple1= Color(0xFF3D246C)
+val palette2DarkPurple2= Color(0xFF5C4B99)
+val palette2DarkPurple3= Color(0xFF9F91CC)
+val palette2Skin= Color(0xFFFFDBC3)
+val palette2Plum= Color(0xFF5F0F40)
+val palette2DarkRed= Color(0xFF9A031E)
+
 val palette6MagicMint = Color(183, 217, 166) // #B7D9A6
 val palette6LightSlateBlue1 = Color(183, 183, 217) // #B7B7D9
 val palette6PowderBlue = Color(183, 211, 222) // #B7D3DE
