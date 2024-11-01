@@ -38,6 +38,7 @@ import com.aaditx23.wallpaperwizard.components.LockToggle
 import com.aaditx23.wallpaperwizard.components.SelectedWallpaper
 import com.aaditx23.wallpaperwizard.components.createFolder
 import com.aaditx23.wallpaperwizard.components.deleteFolder
+import com.aaditx23.wallpaperwizard.components.deleteImage
 import com.aaditx23.wallpaperwizard.components.listFilesIn
 import com.aaditx23.wallpaperwizard.components.listSubfolders
 import com.aaditx23.wallpaperwizard.components.saveImage
@@ -53,7 +54,6 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     var selectedHomeScreen by remember { mutableStateOf<Bitmap?>(null) }
     var selectedLockScreen by remember { mutableStateOf<Bitmap?>(null) }
     var showLockScreen by remember { mutableStateOf(false) }
-    var hasLockScreen by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val id = quickSetItem._id.toHexString()
@@ -100,6 +100,19 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     set = { toggle ->
                         showLockScreen = toggle
                         if(!toggle && selectedLockScreen != null){
+                            scope.launch {
+                                val result = deleteImage(context, "qs/$id/lock.jpg")
+                                if(result){
+                                    withContext(Dispatchers.Main){
+                                        Toast.makeText(
+                                            context,
+                                            "Deleted Lock Screen for $id",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                                selectedLockScreen = null
+                            }
 
                         }
                     }

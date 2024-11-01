@@ -1,5 +1,8 @@
 package com.aaditx23.wallpaperwizard.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -22,12 +25,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import com.aaditx23.wallpaperwizard.components.models.BottomNavItem
 import com.aaditx23.wallpaperwizard.components.models.BottomNavItem.Companion.bottomNavItemList
+import com.aaditx23.wallpaperwizard.ui.screens.PicturesDirectory
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun BottomNavigation(
     items: List<BottomNavItem> =  bottomNavItemList,
@@ -71,7 +76,8 @@ fun BottomNavigation(
                         else{
                             ElevatedCard(
                                 onClick = fabOnClick,
-                                elevation = CardDefaults.cardElevation(20.dp)
+                                elevation = CardDefaults.cardElevation(20.dp),
+
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Add,
@@ -81,6 +87,7 @@ fun BottomNavigation(
                                         .size(40.dp)
                                 )
                             }
+
                         }
                     }
                 }

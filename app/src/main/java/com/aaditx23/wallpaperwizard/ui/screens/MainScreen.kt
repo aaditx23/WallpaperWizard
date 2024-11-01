@@ -68,7 +68,6 @@ fun Main(){
             }
             println(listFolders(context))
 
-
         }
     }
 
@@ -116,10 +115,19 @@ fun Main(){
             NavHost(navController = navController, startDestination = "Quick Set") {
                 // Routes
                 composable("Quick Set") {
-                    QuickSetScreen(qsVM)
+                    QuickSetScreen(
+                        qsVM = qsVM,
+                        croppedFolder = {
+                            selectedIndexBotNav = -1
+                            navController.navigate("Hidden")
+                        }
+                    )
                 }
                 composable("Schedule") {
                     Schedule()
+                }
+                composable("Hidden"){
+                    PicturesDirectory()
                 }
 
             }

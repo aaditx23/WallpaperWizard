@@ -54,13 +54,13 @@ fun deleteFolder(context: Context, folderName: String): Boolean {
     return false
 }
 
-fun deleteImage(context: Context, folderName: String, fileName: String): Boolean {
-    val folder = File(context.filesDir, folderName)
-    val file = File(folder, "$fileName.jpg")
+fun deleteImage(context: Context, filePath: String): Boolean {
+    // Create a File object for the target file
+    val file = File(context.filesDir, filePath)
     return if (file.exists() && file.isFile) {
-        file.delete()
+        file.delete() // Delete the file if it exists
     } else {
-        false
+        false // Return false if the file doesn't exist or isn't a file
     }
 }
 
