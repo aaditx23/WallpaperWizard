@@ -2,7 +2,10 @@ package com.aaditx23.wallpaperwizard.components
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Environment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 
@@ -17,8 +20,21 @@ fun createFolder(context: Context, folderName: String): String {
     return folder.absolutePath
 }
 
-fun saveImage(bitmap: Bitmap, path: String, fileName: String): String? {
-    val file = File(path, "$fileName.jpg")
+fun saveImage(context: Context, bitmap: Bitmap, folderName: String, fileName: String): String? {
+    // Get the internal storage directory of the app
+    val appInternalDir = context.filesDir
+
+    // Create the target folder path
+    val folderPath = File(appInternalDir, folderName)
+
+    // Ensure the folder exists
+    if (!folderPath.exists()) {
+        folderPath.mkdirs() // Create the folder if it doesn't exist
+    }
+
+    // Create the file for the image
+    val file = File(folderPath, "$fileName.jpg")
+
     return try {
         file.outputStream().use { out ->
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
@@ -55,4 +71,53 @@ fun listFolders(context: Context): List<String> {
     // Filter to get only directories within the internal storage
     return appInternalDir.listFiles()?.filter { it.isDirectory }?.map { it.name } ?: emptyList()
 }
+fun listSubfolders(context: Context, folderName: String): List<String> {
+    // Get the internal storage directory of the app
+    val appInternalDir = context.filesDir
+
+    // Create a reference to the specified folder
+    val targetDir = File(appInternalDir, folderName)
+
+    // Check if the specified folder exists and is indeed a directory
+    return if (targetDir.exists() && targetDir.isDirectory) {
+        // List and filter only directories within the specified folder
+        targetDir.listFiles()?.filter { it.isDirectory }?.map { it.name } ?: emptyList()
+    } else {
+        // Return an empty list if the folder does not exist
+        emptyList()
+    }
+}
+
+
+fun listFilesIn(context: Context, folderName: String): List<String> {
+    // Get the internal storage directory of the app
+    val appInternalDir = context.filesDir
+
+    // Create a reference to the specified folder
+    val folderPath = File(appInternalDir, folderName) // Use the context to get the app's internal storage directory
+
+    // Check if the specified folder exists and is indeed a directory
+    if (folderPath.exists() && folderPath.isDirectory) {
+        return folderPath.listFiles()?.map { it.name } ?: emptyList()
+    }
+    return emptyList() // Return an empty list if folder doesn't exist or isn't a directory
+}
+
+suspend fun JpgToBitmapAsync(context: Context, fullPath: String): Bitmap? {
+    return withContext(Dispatchers.IO) { // Switch to the IO context
+        // Get the internal storage directory of the app
+        println("Converting")
+        val appInternalDir = context.filesDir
+        val file = File(appInternalDir, fullPath) // Create the full path using context.filesDir
+
+        if (file.exists()) {
+            println("Ase")
+            BitmapFactory.decodeFile(file.absolutePath) // Decode the file to a Bitmap
+        } else {
+            println("Nai")
+            null
+        }
+    }
+}
+
 

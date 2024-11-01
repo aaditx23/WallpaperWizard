@@ -28,9 +28,15 @@ sealed class BottomNavItem(
         unselectedIcon = Icons.Outlined.Timer,
         title = "Schedule",
     )
+    object Empty: BottomNavItem(
+        selectedIcon = Icons.Filled.Timer,
+        unselectedIcon = Icons.Outlined.Timer,
+        title = "Empty",
+    )
     companion object{
         val bottomNavItemList = listOf(
             QuickSet,
+            Empty,
             Schedule
         )
 

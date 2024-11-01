@@ -2,7 +2,14 @@ package com.aaditx23.wallpaperwizard.components
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -25,7 +32,8 @@ import com.aaditx23.wallpaperwizard.components.models.BottomNavItem.Companion.bo
 fun BottomNavigation(
     items: List<BottomNavItem> =  bottomNavItemList,
     selectedIndex: Int,
-    onItemSelcted: (Int) -> Unit
+    onItemSelcted: (Int) -> Unit,
+    fabOnClick: () -> Unit
 ){
     var navSelect by rememberSaveable {
         mutableIntStateOf(0)
@@ -43,7 +51,7 @@ fun BottomNavigation(
                     navSelect = idx
                 },
                 label = {
-                    Text(text = item.title)
+                    if(item.title!= "Empty"){ Text(text = item.title) }
                 },
                 alwaysShowLabel = true,
                 icon = {
@@ -52,11 +60,28 @@ fun BottomNavigation(
 
                         }
                     ) {
-                        Icon(
-                            imageVector =
+                        if(item.title != "Empty"){
+                            Icon(
+                                imageVector =
                                 if (index == navSelect) item.selectedIcon
                                 else item.unselectedIcon,
-                            contentDescription = item.title )
+                                contentDescription = item.title
+                            )
+                        }
+                        else{
+                            ElevatedCard(
+                                onClick = fabOnClick,
+                                elevation = CardDefaults.cardElevation(20.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Add,
+                                    contentDescription = "Add",
+                                    modifier = Modifier
+                                        .padding(10.dp)
+                                        .size(40.dp)
+                                )
+                            }
+                        }
                     }
                 }
             )

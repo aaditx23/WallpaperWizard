@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.aaditx23.wallpaperwizard.backend.models.QuickSetModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.Realm
+import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.notifications.SingleQueryChange
 import io.realm.kotlin.query.find
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.mongodb.kbson.ObjectId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,39 +49,19 @@ class QuickSetVM @Inject constructor(
 
 
     // Add a new QuickSetModel item with auto-incremented id
-//    fun addQuickSet(homeScreenPath: String?, lockScreenPath: String?) {
-//        viewModelScope.launch {
-//            realm.write {
-//                val maxId = query<QuickSetModel>().max("id", Int::class).find() ?: 0
-//                copyToRealm(
-//                    QuickSetModel().apply {
-//                        id = maxId + 1
-//                        homeScreen = homeScreenPath
-//                        lockScreen = lockScreenPath
-//                    }
-//                )
-//            }
-//        }
-//    }
-
-    // Update an existing QuickSetModel item by id
-//    fun updateQuickSet(id: Int, homeScreenPath: String?, lockScreenPath: String?) {
-//        viewModelScope.launch {
-//            realm.write {
-//                val quickSet = query<QuickSetModel>("id == $0", id).first().find()
-//                quickSet?.apply {
-//                    this.homeScreen = homeScreenPath
-//                    this.lockScreen = lockScreenPath
-//                }
-//            }
-//        }
-//    }
-
-    // Delete a QuickSetModel item by id
-    fun deleteQuickSet(id: Int) {
+    fun createQuickSet() {
         viewModelScope.launch {
             realm.write {
-                val quickSet = query<QuickSetModel>("id == $0", id).first().find()
+                copyToRealm(QuickSetModel(), updatePolicy = UpdatePolicy.ALL)
+            }
+        }
+    }
+
+    // Delete a QuickSetModel item by id
+    fun deleteQuickSet(id: ObjectId) {
+        viewModelScope.launch {
+            realm.write {
+                val quickSet = query<QuickSetModel>("_id == $0", id).first().find()
                 if (quickSet != null) {
                     delete(quickSet)
                 }

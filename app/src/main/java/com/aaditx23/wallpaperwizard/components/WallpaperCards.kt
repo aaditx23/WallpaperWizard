@@ -14,6 +14,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,10 +29,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun SelectedWallpaper(setBitmap: (Bitmap) -> Unit, text: String){
+fun SelectedWallpaper(
+    setBitmap: (Bitmap) -> Unit,
+    text: String,
+    loadedImage: Bitmap? = null
+){
     val context = LocalContext.current
     var showImagePicker by remember { mutableStateOf(false) }
     var selectedWallpaper by remember{ mutableStateOf<Bitmap?>(null) }
+    LaunchedEffect(loadedImage) {
+        if(loadedImage!= null){
+            selectedWallpaper = loadedImage
+        }
+    }
 
     ElevatedCard(
         onClick = {
