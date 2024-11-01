@@ -21,7 +21,7 @@ sealed class BottomNavItem(
     object QuickSet: BottomNavItem(
         selectedIcon = Icons.Filled.FastForward,
         unselectedIcon = Icons.Outlined.FastForward,
-        title = "Quick Set",
+        title = "QuickSet",
     )
     object Schedule: BottomNavItem(
         selectedIcon = Icons.Filled.Timer,

@@ -112,9 +112,9 @@ fun Main(){
                 )
             }
             ) {
-            NavHost(navController = navController, startDestination = "Quick Set") {
+            NavHost(navController = navController, startDestination = "QuickSet") {
                 // Routes
-                composable("Quick Set") {
+                composable("QuickSet") {
                     QuickSetScreen(
                         qsVM = qsVM,
                         croppedFolder = {
