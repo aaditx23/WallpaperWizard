@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aaditx23.wallpaperwizard.components.CircularLoadingBasic
 import com.aaditx23.wallpaperwizard.components.LockToggle
+import com.aaditx23.wallpaperwizard.components.MovableFloatingActionButton
 import com.aaditx23.wallpaperwizard.components.SelectedWallpaper
 import com.aaditx23.wallpaperwizard.components.setWallpaper
 import com.aaditx23.wallpaperwizard.ui.theme.palette6LightIndigo
@@ -61,7 +62,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun QuickSetScreen(){
+fun QuickSetCard(){
     var selectedHomeScreen by remember { mutableStateOf<Bitmap?>(null) }
     var selectedLockScreen by remember { mutableStateOf<Bitmap?>(null) }
     var showLockScreen by remember { mutableStateOf(false) }
@@ -71,7 +72,7 @@ fun QuickSetScreen(){
     ElevatedCard(
         onClick = {},
         modifier = Modifier
-            .padding(vertical = 20.dp, horizontal = 10.dp),
+            .padding(vertical = 10.dp, horizontal = 10.dp),
         colors = CardDefaults.cardColors(palette6LightIndigo)
     ) {
         Column(

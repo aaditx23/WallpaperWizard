@@ -47,33 +47,33 @@ class QuickSetVM @Inject constructor(
 
 
     // Add a new QuickSetModel item with auto-incremented id
-    fun addQuickSet(homeScreenPath: String?, lockScreenPath: String?) {
-        viewModelScope.launch {
-            realm.write {
-                val maxId = query<QuickSetModel>().max("id", Int::class).find() ?: 0
-                copyToRealm(
-                    QuickSetModel().apply {
-                        id = maxId + 1
-                        homeScreen = homeScreenPath
-                        lockScreen = lockScreenPath
-                    }
-                )
-            }
-        }
-    }
+//    fun addQuickSet(homeScreenPath: String?, lockScreenPath: String?) {
+//        viewModelScope.launch {
+//            realm.write {
+//                val maxId = query<QuickSetModel>().max("id", Int::class).find() ?: 0
+//                copyToRealm(
+//                    QuickSetModel().apply {
+//                        id = maxId + 1
+//                        homeScreen = homeScreenPath
+//                        lockScreen = lockScreenPath
+//                    }
+//                )
+//            }
+//        }
+//    }
 
     // Update an existing QuickSetModel item by id
-    fun updateQuickSet(id: Int, homeScreenPath: String?, lockScreenPath: String?) {
-        viewModelScope.launch {
-            realm.write {
-                val quickSet = query<QuickSetModel>("id == $0", id).first().find()
-                quickSet?.apply {
-                    this.homeScreen = homeScreenPath
-                    this.lockScreen = lockScreenPath
-                }
-            }
-        }
-    }
+//    fun updateQuickSet(id: Int, homeScreenPath: String?, lockScreenPath: String?) {
+//        viewModelScope.launch {
+//            realm.write {
+//                val quickSet = query<QuickSetModel>("id == $0", id).first().find()
+//                quickSet?.apply {
+//                    this.homeScreen = homeScreenPath
+//                    this.lockScreen = lockScreenPath
+//                }
+//            }
+//        }
+//    }
 
     // Delete a QuickSetModel item by id
     fun deleteQuickSet(id: Int) {

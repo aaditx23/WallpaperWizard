@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -27,8 +28,11 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.aaditx23.wallpaperwizard.components.BottomNavigation
+import com.aaditx23.wallpaperwizard.components.MovableFloatingActionButton
 
 import com.aaditx23.wallpaperwizard.components.checkPermission
+import com.aaditx23.wallpaperwizard.components.models.BottomNavItem.Companion.bottomNavItemList
 
 import com.aaditx23.wallpaperwizard.components.models.NavDrawerItem.Companion.navDrawerItems
 
@@ -41,9 +45,6 @@ import com.aaditx23.wallpaperwizard.components.requestAllFilesAccess
 fun Main(){
     var selectedIndexBotNav by rememberSaveable {
         mutableIntStateOf(0)
-    }
-    var selectedIndexDrawer by rememberSaveable {
-        mutableIntStateOf(-1)
     }
 
     val navController = rememberNavController()
@@ -80,44 +81,27 @@ fun Main(){
 
     //-------------------------------
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                NavDrawer(
-                    scrollState = scrollState,
-                    selectedIndex = selectedIndexDrawer,
-                    onClick = { item ->
-                        selectedIndexDrawer = navDrawerItems.indexOf(item)
-                        navController.navigate(item.title)
-                        selectedIndexBotNav = -1
-                        scope.launch {
-                            drawerState.close()
-                        }
-                    },
 
-                    )
-            }
-        },
-        gesturesEnabled = true
-    ) {
 
         Scaffold(
-//            bottomBar = {
-//                BottomNavigation(selectedIndex = selectedIndexBotNav) { index ->
-//                    selectedIndexBotNav = index
-//                    selectedIndexDrawer = -1
-//                    println("$selectedIndexDrawer $selectedIndexBotNav")
-//                    when (index) {
-//                        0 -> navController.navigate("Profile")
-//                        1 -> navController.navigate("Dashboard")
-//                    }
-//
-//                }
-//            },
+            bottomBar = {
+                BottomNavigation(
+                    selectedIndex = selectedIndexBotNav,
+                ) { index ->
+                    selectedIndexBotNav = index
+                    navController.navigate(bottomNavItemList[index].title)
+                }
+            },
             topBar = {
                 TopActionBar(drawerState = drawerState, scope = scope)
             },
+            floatingActionButtonPosition = FabPosition.Center,
+            floatingActionButton = {
+                MovableFloatingActionButton {
+
+                }
+            },
+
 
             ) {
             NavHost(navController = navController, startDestination = "Quick Set") {
@@ -132,7 +116,7 @@ fun Main(){
             }
         }
 
-    }
+
 }
 
 
