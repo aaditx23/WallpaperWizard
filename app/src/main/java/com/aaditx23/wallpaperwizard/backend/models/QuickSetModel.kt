@@ -7,7 +7,4 @@ import org.mongodb.kbson.ObjectId
 
 class QuickSetModel: RealmObject{
     @PrimaryKey var _id: ObjectId = BsonObjectId()
-    var id: Int = 0
-    var homeScreen: String? = null
-    var lockScreen: String? = null
 }
