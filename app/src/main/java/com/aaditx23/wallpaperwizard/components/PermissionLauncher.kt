@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
+import android.app.AlarmManager
 
 @Composable
 fun permissionLauncher(context: Context, permission: String): Boolean{
@@ -37,6 +38,22 @@ fun permissionLauncher(context: Context, permission: String): Boolean{
 
     return hasPermission
 }
+
+
+
+fun batteryExemptPermission(context: Context) {
+    val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+    // Check if the permission is needed (on Android 12 or later)
+
+    if (!alarmManager.canScheduleExactAlarms()) {
+        // Direct the user to the "Allow exact alarms" settings page
+        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+        context.startActivity(intent)
+    }
+
+}
+
 
 fun checkPermission(context: Context, permission: String): Boolean {
     return ContextCompat.checkSelfPermission(

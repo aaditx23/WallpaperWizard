@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.aaditx23.wallpaperwizard.backend.viewmodels.QuickSetVM
 import com.aaditx23.wallpaperwizard.backend.viewmodels.ScheduleVM
 import com.aaditx23.wallpaperwizard.components.BottomNavigation
+import com.aaditx23.wallpaperwizard.components.batteryExemptPermission
 
 import com.aaditx23.wallpaperwizard.components.checkPermission
 import com.aaditx23.wallpaperwizard.components.createFolder
@@ -54,7 +55,8 @@ fun Main(){
     val context = LocalContext.current
     val permissions = listOf(
         Manifest.permission.MANAGE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_MEDIA_IMAGES
+        Manifest.permission.READ_MEDIA_IMAGES,
+        Manifest.permission.SCHEDULE_EXACT_ALARM
     )
 
     LaunchedEffect(Unit) {
@@ -89,6 +91,9 @@ fun Main(){
     }
     if(!checkPermission(context, permissions[1])){
         permissionLauncher(context, Manifest.permission.READ_MEDIA_IMAGES)
+    }
+    if(!checkPermission(context, permissions[2])){
+        batteryExemptPermission(context)
     }
 
 

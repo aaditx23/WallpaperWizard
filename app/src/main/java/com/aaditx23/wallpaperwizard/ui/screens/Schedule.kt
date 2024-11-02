@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.WatchLater
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import com.aaditx23.wallpaperwizard.components.CurrentBitmap
+import com.aaditx23.wallpaperwizard.components.DayBar
 import com.aaditx23.wallpaperwizard.components.ImagePicker
 import com.aaditx23.wallpaperwizard.components.LockToggle
 import com.aaditx23.wallpaperwizard.components.SelectedWallpaper
@@ -60,6 +62,7 @@ fun Schedule(){
     var selectedLockScreen by remember { mutableStateOf<Bitmap?>(null) }
     var startTime by remember { mutableStateOf("") }
     var endTime by remember { mutableStateOf("") }
+    val daySelected by remember { mutableStateOf(mutableSetOf<Int>()) }
 
 
     var showLockScreen by remember { mutableStateOf(false) }
@@ -68,6 +71,7 @@ fun Schedule(){
 
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val cardWidth = 100
     LaunchedEffect(showLockScreen) {
         scope.launch{
             getCurrentDrawable(context, 0)?.let {
@@ -88,91 +92,122 @@ fun Schedule(){
 //            .fillMaxSize()
             .padding(top = 70.dp)
     ) {
-        Column{
-            Row {
-                Column {
-                    Row(
-                        modifier = Modifier,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        CurrentBitmap(currentHomeScreen, "Current Home")
-                        if (showLockScreen) {
-                            CurrentBitmap(currentLockScreen, "Current Lock")
-                        } else {
-                            SelectedWallpaper(
-                                setBitmap = { bitmap ->
-                                    selectedHomeScreen = bitmap
-                                },
-                                text = "Selected Home"
-                            )
-                        }
-                    }
-                    if (showLockScreen) {
-                        Row(
-                            modifier = Modifier,
-//                        .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            SelectedWallpaper(
-                                setBitmap = { bitmap ->
-                                    selectedHomeScreen = bitmap
-                                },
-                                text = "Selected Home"
-                            )
-                            SelectedWallpaper(
-                                setBitmap = { bitmap ->
-                                    selectedLockScreen = bitmap
-                                },
-                                text = "Selected Lock"
-                            )
-                        }
-                    }
+
+        Column {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 50.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                CurrentBitmap(currentHomeScreen, home = true, cardWidth)
+                if (showLockScreen) {
+                    CurrentBitmap(currentLockScreen, width = cardWidth)
+                } else {
+                    SelectedWallpaper(
+                        setBitmap = { bitmap ->
+                            selectedHomeScreen = bitmap
+                        },
+                        home = true,
+                        width = cardWidth
+                    )
                 }
-                ElevatedCard(
+            }
+            if (showLockScreen) {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 50.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    SelectedWallpaper(
+                        setBitmap = { bitmap ->
+                            selectedHomeScreen = bitmap
+                        },
+                        home = true,
+                        width = cardWidth
+                    )
+                    SelectedWallpaper(
+                        setBitmap = { bitmap ->
+                            selectedLockScreen = bitmap
+                        },
+                        width = cardWidth
+                    )
+                }
+            }
+            ElevatedCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                elevation = CardDefaults.cardElevation(10.dp)
+            ) {
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    elevation = CardDefaults.cardElevation(10.dp)
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        contentAlignment = Alignment.TopEnd
-                    ) {
 
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Spacer(modifier = Modifier.height(78.dp))
-                            Text(
-                                text =
-                                if (showLockScreen) "Lock & Home"
-                                else "Home",
-                                fontSize = 15.sp
-                            )
-                            LockToggle(
-                                set = { check ->
-                                    showLockScreen = check
-                                }
-                            )
-                            Spacer(modifier = Modifier.height(30.dp))
-                            TimeField("Start") { time ->
-                                startTime = time
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text =
+                            if (showLockScreen) "Lock & Home"
+                            else "Home",
+                            fontSize = 15.sp
+                        )
+//                        DayBar(
+//                            selectedIndex = daySelected
+//                        ) { i ->
+//                            daySelected.add(i)
+//                        }
+                        LockToggle(
+                            hasLock = showLockScreen,
+                            set = { check ->
+                                showLockScreen = check
                             }
-                            Spacer(modifier = Modifier.height(30.dp))
-                            TimeField("End") { time ->
-                                endTime = time
+                        )
+                        Row{
+                            Column(
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth(0.5f)
+                            ) {
+                                TimeField("Start") { time ->
+                                    startTime = time
+                                }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                TimeField("End") { time ->
+                                    endTime = time
+                                }
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth()
+                            ) {
+                                Button(
+                                    onClick = {}
+                                ) {
+                                    Text("Start")
+                                }
+                                Button(
+                                    onClick = {}
+                                ) {
+                                    Text("Stop")
+                                }
                             }
                         }
                     }
                 }
             }
-
-            // Repeat days
-
-
         }
     }
+
+    // Repeat days
+
+
+
 }
 

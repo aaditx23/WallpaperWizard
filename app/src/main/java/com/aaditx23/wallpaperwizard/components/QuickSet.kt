@@ -126,7 +126,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                             selectedHomeScreen = image
                             saveImage(context, image, "qs/$id", "home")
                         },
-                        text = "Selected Home",
+                        home = true,
                         loadedImage = selectedHomeScreen
                     )
                     if (showLockScreen) {
@@ -135,7 +135,6 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                                 selectedLockScreen = image
                                 saveImage(context, image, "qs/$id", "lock")
                             },
-                            text = "Selected Lock",
                             loadedImage = selectedLockScreen
                         )
                     }
