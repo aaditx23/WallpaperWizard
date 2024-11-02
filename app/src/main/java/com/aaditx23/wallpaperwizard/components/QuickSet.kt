@@ -35,9 +35,6 @@ import com.aaditx23.wallpaperwizard.backend.models.QuickSetModel
 import com.aaditx23.wallpaperwizard.backend.viewmodels.QuickSetVM
 import com.aaditx23.wallpaperwizard.ui.theme.palette2Plum
 import com.aaditx23.wallpaperwizard.ui.theme.palette7Green1
-import com.aaditx23.wallpaperwizard.ui.theme.palette7Green2
-import com.aaditx23.wallpaperwizard.ui.theme.palette7Paste1
-import com.aaditx23.wallpaperwizard.ui.theme.paletteBlue2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -121,7 +118,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     )
                 }
                 Row {
-                    SelectedWallpaper(
+                    ImageCard(
                         setBitmap = { image ->
                             selectedHomeScreen = image
                             saveImage(context, image, "qs/$id", "home")
@@ -130,7 +127,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                         loadedImage = selectedHomeScreen
                     )
                     if (showLockScreen) {
-                        SelectedWallpaper(
+                        ImageCard(
                             setBitmap = { image ->
                                 selectedLockScreen = image
                                 saveImage(context, image, "qs/$id", "lock")
@@ -223,8 +220,8 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                             buttonColor = palette2Plum
                         ) {
                             scope.launch {
-                                qsVM.deleteQuickSet(quickSetItem._id)
                                 deleteFolder(context, "qs/$id")
+                                qsVM.deleteQuickSet(quickSetItem._id)
                                 println(listSubfolders(context, "qs"))
                             }
                         }

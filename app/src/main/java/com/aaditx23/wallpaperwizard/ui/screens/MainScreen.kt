@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -20,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.aaditx23.wallpaperwizard.backend.models.ScheduleModel
 import com.aaditx23.wallpaperwizard.backend.viewmodels.QuickSetVM
 import com.aaditx23.wallpaperwizard.backend.viewmodels.ScheduleVM
 import com.aaditx23.wallpaperwizard.components.BottomNavigation
@@ -35,6 +38,7 @@ import com.aaditx23.wallpaperwizard.components.models.BottomNavItem.Companion.bo
 
 import com.aaditx23.wallpaperwizard.components.permissionLauncher
 import com.aaditx23.wallpaperwizard.components.requestAllFilesAccess
+import com.aaditx23.wallpaperwizard.components.scheduler.WallpaperScheduler
 import kotlinx.coroutines.launch
 
 
@@ -52,7 +56,11 @@ fun Main(){
     var scope = rememberCoroutineScope()
     var scrollState = rememberScrollState()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    var scheduleItem by remember { mutableStateOf<ScheduleModel?>(null) }
     val context = LocalContext.current
+    val appContext = LocalContext.current.applicationContext
+    val wallpaperScheduler = WallpaperScheduler(appContext)
     val permissions = listOf(
         Manifest.permission.MANAGE_EXTERNAL_STORAGE,
         Manifest.permission.READ_MEDIA_IMAGES,
@@ -114,8 +122,12 @@ fun Main(){
                         navController.navigate(bottomNavItemList[index].title)
                     },
                     fabOnClick = {
-                        if(selectedIndexBotNav == 0){
-                            qsVM.createQuickSet()
+                        scope.launch{
+                            println("Selected index $selectedIndexBotNav")
+                            when (selectedIndexBotNav) {
+                                0 -> qsVM.create()
+                                2 -> schedulevm.create()
+                            }
                         }
                     }
                 )
@@ -133,11 +145,29 @@ fun Main(){
                     )
                 }
                 composable("Schedule") {
-                    Schedule()
+                    ScheduleScreen(schedulevm, navController) { item ->
+                        scheduleItem = item
+                    }
                 }
                 composable("Hidden"){
                     PicturesDirectory()
                 }
+                composable("ScheduleCard"){
+                    scheduleItem?.let {
+                        wallpaperScheduler.addId(scheduleItem!!._id.toHexString())
+                        Schedule(it, schedulevm, wallpaperScheduler)
+                    }
+                }
+//                composable("CreateAccount/{email}/{name}") { backStackEntry ->
+//                    val email = backStackEntry.arguments?.getString("email") ?: ""
+//                    val name = backStackEntry.arguments?.getString("name") ?: ""
+//                    Signup(
+//                        accountvm = accountvm,
+//                        email = email,
+//                        name = name,
+//                        navController = navController
+//                    )
+//                }
 
             }
         }

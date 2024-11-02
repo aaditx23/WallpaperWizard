@@ -7,9 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
-import io.realm.kotlin.notifications.SingleQueryChange
-import io.realm.kotlin.query.find
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,7 +46,7 @@ class QuickSetVM @Inject constructor(
 
 
     // Add a new QuickSetModel item with auto-incremented id
-    fun createQuickSet() {
+    fun create() {
         viewModelScope.launch {
             realm.write {
                 copyToRealm(QuickSetModel(), updatePolicy = UpdatePolicy.ALL)

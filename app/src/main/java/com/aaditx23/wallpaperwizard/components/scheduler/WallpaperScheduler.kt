@@ -11,20 +11,20 @@ import java.util.Locale
 class WallpaperScheduler(private val context: Context) {
 
     // AlarmManager for scheduling alarms
-    private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    private var alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     // Define Intent for setting wallpaper
-    private val setWallpaperIntent = Intent(context, WallpaperAlarmReceiver::class.java).apply {
+    private var setWallpaperIntent = Intent(context, WallpaperAlarmReceiver::class.java).apply {
         putExtra("action", "set_wallpaper")
     }
 
     // Define Intent for reverting wallpaper
-    private val revertWallpaperIntent = Intent(context, WallpaperAlarmReceiver::class.java).apply {
+    private var revertWallpaperIntent = Intent(context, WallpaperAlarmReceiver::class.java).apply {
         putExtra("action", "revert_wallpaper")
     }
 
     // PendingIntent for setting wallpaper
-    private val setWallpaperPendingIntent = PendingIntent.getBroadcast(
+    private var setWallpaperPendingIntent = PendingIntent.getBroadcast(
         context,
         0,
         setWallpaperIntent,
@@ -32,12 +32,35 @@ class WallpaperScheduler(private val context: Context) {
     )
 
     // PendingIntent for reverting wallpaper
-    private val revertWallpaperPendingIntent = PendingIntent.getBroadcast(
+    private var revertWallpaperPendingIntent = PendingIntent.getBroadcast(
         context,
         1,
         revertWallpaperIntent,
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
     )
+
+    fun addId(id: String){
+        setWallpaperIntent = Intent(context, WallpaperAlarmReceiver::class.java).apply {
+            putExtra("action", "set_wallpaper")
+            putExtra("schedule_id", id)
+        }
+        revertWallpaperIntent = Intent(context, WallpaperAlarmReceiver::class.java).apply {
+            putExtra("action", "revert_wallpaper")
+            putExtra("schedule_id", id)
+        }
+        setWallpaperPendingIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            setWallpaperIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        revertWallpaperPendingIntent = PendingIntent.getBroadcast(
+            context,
+            1,
+            revertWallpaperIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
 
     // Function to schedule the wallpaper change
     fun scheduleAlarm(startTimeString: String, endTimeString: String) {

@@ -111,10 +111,8 @@ suspend fun JpgToBitmapAsync(context: Context, fullPath: String): Bitmap? {
         val file = File(appInternalDir, fullPath) // Create the full path using context.filesDir
 
         if (file.exists()) {
-            println("Ase")
             BitmapFactory.decodeFile(file.absolutePath) // Decode the file to a Bitmap
         } else {
-            println("Nai")
             null
         }
     }

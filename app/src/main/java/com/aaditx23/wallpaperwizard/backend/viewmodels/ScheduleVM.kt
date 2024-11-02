@@ -6,6 +6,7 @@ import com.aaditx23.wallpaperwizard.backend.models.QuickSetModel
 import com.aaditx23.wallpaperwizard.backend.models.ScheduleModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.Realm
+import io.realm.kotlin.UpdatePolicy
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.notifications.SingleQueryChange
 import io.realm.kotlin.query.find
@@ -51,10 +52,40 @@ class ScheduleVM @Inject constructor(
     }
 
     // Method to add or update a ScheduleModel in Realm
-    fun addOrUpdateSchedule(schedule: ScheduleModel) {
+    fun create() {
         viewModelScope.launch {
             realm.write {
-                copyToRealm(schedule)
+                copyToRealm(ScheduleModel(), updatePolicy = UpdatePolicy.ALL)
+            }
+        }
+    }
+    fun setStartTime(id: ObjectId, startTime: String){
+        viewModelScope.launch {
+            realm.write {
+                val schedule = query<ScheduleModel>("_id == $0", id).first().find()
+                if (schedule != null){
+                    schedule.startTime = startTime
+                }
+            }
+        }
+    }
+    fun setEndTime(id: ObjectId, endTime: String){
+        viewModelScope.launch {
+            realm.write {
+                val schedule = query<ScheduleModel>("_id == $0", id).first().find()
+                if (schedule != null){
+                    schedule.endTime = endTime
+                }
+            }
+        }
+    }
+    fun setRunning(id: ObjectId, running: Boolean){
+        viewModelScope.launch {
+            realm.write {
+                val schedule = query<ScheduleModel>("_id == $0", id).first().find()
+                if (schedule != null){
+                    schedule.running = running
+                }
             }
         }
     }
