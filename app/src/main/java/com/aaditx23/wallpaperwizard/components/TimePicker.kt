@@ -65,13 +65,14 @@ fun TimePicker(
 @Composable
 fun TimeField(
     label: String,
-    setTime: (String) -> Unit
+    text: String,
+    setTime: (String, String) -> Unit
 
 ){
     var showTimePicker by remember { mutableStateOf(false) }
     var time by remember { mutableStateOf("00:00") }
     OutlinedTextField(
-        value = time,
+        value = text,
         onValueChange = {
 
         },
@@ -96,8 +97,8 @@ fun TimeField(
         TimePicker(
             onConfirm = { timePicker ->
                 val temp = "${timePicker.hour}:${timePicker.minute}"
-                setTime(temp)
                 time = to12Hour(timePicker)
+                setTime(temp, time)
                 showTimePicker = false
             },
             onDismiss = {

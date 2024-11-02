@@ -7,8 +7,8 @@ import org.mongodb.kbson.ObjectId
 
 class ScheduleModel: RealmObject{
     @PrimaryKey var _id: ObjectId = BsonObjectId()
-    var repeatDays: String? = null
     var startTime: String? = null
     var endTime: String? = null
     var repeat: String? = null
+    var running: Boolean = false
 }

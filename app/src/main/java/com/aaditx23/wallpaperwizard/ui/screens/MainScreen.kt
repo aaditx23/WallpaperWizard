@@ -23,11 +23,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.aaditx23.wallpaperwizard.backend.viewmodels.QuickSetVM
 import com.aaditx23.wallpaperwizard.backend.viewmodels.ScheduleVM
 import com.aaditx23.wallpaperwizard.components.BottomNavigation
+import com.aaditx23.wallpaperwizard.components.Schedule
 import com.aaditx23.wallpaperwizard.components.batteryExemptPermission
 
 import com.aaditx23.wallpaperwizard.components.checkPermission
 import com.aaditx23.wallpaperwizard.components.createFolder
-import com.aaditx23.wallpaperwizard.components.deleteFolder
 import com.aaditx23.wallpaperwizard.components.listFolders
 import com.aaditx23.wallpaperwizard.components.models.BottomNavItem.Companion.bottomNavItemList
 
@@ -56,7 +56,8 @@ fun Main(){
     val permissions = listOf(
         Manifest.permission.MANAGE_EXTERNAL_STORAGE,
         Manifest.permission.READ_MEDIA_IMAGES,
-        Manifest.permission.SCHEDULE_EXACT_ALARM
+        Manifest.permission.SCHEDULE_EXACT_ALARM,
+        Manifest.permission.POST_NOTIFICATIONS
     )
 
     LaunchedEffect(Unit) {
@@ -90,10 +91,13 @@ fun Main(){
         requestAllFilesAccess(context)
     }
     if(!checkPermission(context, permissions[1])){
-        permissionLauncher(context, Manifest.permission.READ_MEDIA_IMAGES)
+        permissionLauncher(context, permissions[1])
     }
     if(!checkPermission(context, permissions[2])){
         batteryExemptPermission(context)
+    }
+    if(!checkPermission(context, permissions[3])){
+        permissionLauncher(context, permissions[3])
     }
 
 

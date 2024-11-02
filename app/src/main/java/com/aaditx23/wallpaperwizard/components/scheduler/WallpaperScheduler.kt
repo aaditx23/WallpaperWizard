@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class WallpaperScheduler(private val context: Context) {
 
@@ -38,16 +40,33 @@ class WallpaperScheduler(private val context: Context) {
     )
 
     // Function to schedule the wallpaper change
-    fun scheduleAlarm(startTime: Calendar, endTime: Calendar) {
-        // Schedule the alarm to set the wallpaper at startTime
-        if(alarmManager.canScheduleExactAlarms()) {
+    fun scheduleAlarm(startTimeString: String, endTimeString: String) {
+        // Define the date format that matches your input time strings
+        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
+        // Parse start and end times from strings to Calendar objects
+        val startTime = Calendar.getInstance().apply {
+            time = dateFormat.parse(startTimeString) ?: return
+        }
+
+
+        val endTime = Calendar.getInstance().apply {
+            time = dateFormat.parse(endTimeString) ?: return
+        }
+
+        // Adjust both to today's date
+        val today = Calendar.getInstance()
+        startTime.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH))
+        endTime.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH))
+
+        // Schedule alarms (assuming canScheduleExactAlarms and PendingIntents are set up)
+        if (alarmManager.canScheduleExactAlarms()) {
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 startTime.timeInMillis,
                 setWallpaperPendingIntent
             )
 
-            // Schedule the alarm to revert the wallpaper at endTime
             alarmManager.setExact(
                 AlarmManager.RTC_WAKEUP,
                 endTime.timeInMillis,
