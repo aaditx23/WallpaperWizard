@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +36,8 @@ fun SelectedWallpaper(
     loadedImage: Bitmap? = null
 ){
     val context = LocalContext.current
+    val cardWidth = 100
+    val cardHeight = getHeight(context, cardWidth) + 15
     var showImagePicker by remember { mutableStateOf(false) }
     var selectedWallpaper by remember{ mutableStateOf<Bitmap?>(null) }
     LaunchedEffect(loadedImage) {
@@ -49,9 +52,10 @@ fun SelectedWallpaper(
         },
         modifier = Modifier
             .padding(10.dp)
-            .height(170.dp)
-            .width(100.dp),
-        elevation = CardDefaults.cardElevation(10.dp)
+            .height(cardHeight.dp)
+            .width(cardWidth.dp),
+        elevation = CardDefaults.cardElevation(10.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onSecondaryContainer)
 
 
     ) {
@@ -75,7 +79,8 @@ fun SelectedWallpaper(
                     text = text,
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.surfaceDim
                 )
             }
         }
@@ -96,16 +101,18 @@ fun SelectedWallpaper(
 @Composable
 fun CurrentBitmap(image: Bitmap?, text: String) {
     val context = LocalContext.current
-
+    val cardWidth = 100
+    val cardHeight = getHeight(context, cardWidth) + 15
     ElevatedCard(
         onClick = {
 
         },
         modifier = Modifier
             .padding(10.dp)
-            .height(170.dp)
-            .width(100.dp),
-        elevation = CardDefaults.cardElevation(10.dp)
+            .height(cardHeight.dp)
+            .width(cardWidth.dp),
+        elevation = CardDefaults.cardElevation(10.dp),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.inversePrimary)
     ) {
         Box(
             modifier = Modifier
@@ -128,7 +135,8 @@ fun CurrentBitmap(image: Bitmap?, text: String) {
                     text = text,
                     fontSize = 12.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.scrim
                 )
             }
         }

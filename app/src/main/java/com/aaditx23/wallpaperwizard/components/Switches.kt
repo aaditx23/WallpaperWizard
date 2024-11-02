@@ -10,6 +10,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -63,6 +64,7 @@ fun LockToggle(
                     imageVector = Icons.Filled.Home,
                     contentDescription = "Thumb",
                     modifier = Modifier.size(15.dp),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         )
@@ -74,7 +76,7 @@ fun LockToggle(
                     .align(Alignment.CenterStart) // Align to the left inside the switch background
                     .padding(6.dp) // Adjust padding as needed to align within the switch
                     .size(15.dp),
-                tint = buttonThumbTint
+                tint = MaterialTheme.colorScheme.surface
             )
         }
     }

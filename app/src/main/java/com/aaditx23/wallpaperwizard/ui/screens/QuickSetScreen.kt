@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.aaditx23.wallpaperwizard.backend.viewmodels.QuickSetVM
 import com.aaditx23.wallpaperwizard.components.CircularLoadingBasic
+import com.aaditx23.wallpaperwizard.components.QuickSetCard
 
 @Composable
 fun QuickSetScreen(

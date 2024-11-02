@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.util.Base64
+import android.util.DisplayMetrics
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,7 +30,9 @@ import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
 @Composable
-fun ImagePicker(onImagePicked: (image: Bitmap) -> Unit){
+fun ImagePicker(
+    onImagePicked: (image: Bitmap) -> Unit
+){
     println("Launching")
     var selectedImageBitmap by remember {
         mutableStateOf<Bitmap?>(null)
@@ -46,7 +49,10 @@ fun ImagePicker(onImagePicked: (image: Bitmap) -> Unit){
         context = context,
         permission = permission
     )
-    println(hasImagePermission)
+
+    val temp = getScreenMetrics(context)
+    val screenX = temp[0]
+    val screenY = temp[1]
 
     val cropLauncher = rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
         if (result.isSuccessful){
@@ -65,8 +71,8 @@ fun ImagePicker(onImagePicked: (image: Bitmap) -> Unit){
     ) { uri: Uri? ->
         val cropOptions = CropImageContractOptions(uri, CropImageOptions().apply {
             fixAspectRatio = true
-            aspectRatioX = 3
-            aspectRatioY = 4
+            aspectRatioX = screenX
+            aspectRatioY = screenY
             outputCompressQuality = 100
             outputCompressFormat = Bitmap.CompressFormat.JPEG
         })
@@ -80,6 +86,25 @@ fun ImagePicker(onImagePicked: (image: Bitmap) -> Unit){
             launcher.launch(("image/*"))
         }
     }
+}
+
+private fun getScreenMetrics(context: Context): List<Int>  {
+    val display = context.resources.displayMetrics
+
+    val width = display.widthPixels
+    val height = display.heightPixels
+
+    return listOf( width, height)
+}
+fun getHeight(context: Context, width: Int): Int {
+    // Get the screen's width and height to calculate the aspect ratio
+    val screenMetrics = getScreenMetrics(context)
+
+    // Calculate the aspect ratio (height-to-width ratio)
+    val aspectRatio = screenMetrics[1].toFloat() / screenMetrics[0].toFloat()
+
+    // Calculate the height based on the given width and aspect ratio
+    return (width * aspectRatio).toInt()
 }
 
 fun createBitmapFromUri(context: Context, uri: Uri): Bitmap {
