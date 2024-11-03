@@ -60,7 +60,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
             }
             else{
                 val fileList = listFilesIn(context, "qs/$id")
-                println(fileList)
+//                println(fileList)
                 if(fileList.contains("home.jpg")){
                     selectedHomeScreen = JpgToBitmapAsync(context, "qs/$id/home.jpg")
                 }
@@ -69,11 +69,11 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     showLockScreen = true
                 }
             }
-            println(listSubfolders(context, "qs"))
+//            println(listSubfolders(context, "qs"))
             isLoading = false
         }
     }
-    println("ShowLockScreen $showLockScreen")
+//    println("ShowLockScreen $showLockScreen")
 
     ElevatedCard(
         onClick = {},
@@ -222,7 +222,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                             scope.launch {
                                 deleteFolder(context, "qs/$id")
                                 qsVM.deleteQuickSet(quickSetItem._id)
-                                println(listSubfolders(context, "qs"))
+//                                println(listSubfolders(context, "qs"))
                             }
                         }
 

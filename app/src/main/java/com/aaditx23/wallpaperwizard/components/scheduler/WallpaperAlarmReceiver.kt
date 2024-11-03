@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import com.aaditx23.wallpaperwizard.components.JpgToBitmapAsync
+import com.aaditx23.wallpaperwizard.components.savePref
 import com.aaditx23.wallpaperwizard.components.setWallpaper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,16 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                 val id = intent.getStringExtra("schedule_id")
                 id?.let {
                     CoroutineScope(Dispatchers.IO).launch {
+                        savePref(
+                            context,
+                            key = "schedule_id",
+                            value = id
+                        )
+                        savePref(
+                            context,
+                            key = "schedule_status",
+                            value = "started"
+                        )
                         val home = JpgToBitmapAsync(
                             context,
                             fullPath = "schedule/$id/selectedHome.jpg"
@@ -48,6 +59,11 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                 val id = intent.getStringExtra("schedule_id")
                 id?.let {
                     CoroutineScope(Dispatchers.IO).launch {
+                        savePref(
+                            context,
+                            key = "schedule_status",
+                            value = "completed"
+                        )
                         val home = JpgToBitmapAsync(
                             context,
                             fullPath = "schedule/$id/prevHome.jpg"

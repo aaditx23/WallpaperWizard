@@ -10,5 +10,5 @@ class ScheduleModel: RealmObject{
     var startTime: String? = null
     var endTime: String? = null
     var repeat: String? = null
-    var running: Boolean = false
+    var running: String = ""
 }

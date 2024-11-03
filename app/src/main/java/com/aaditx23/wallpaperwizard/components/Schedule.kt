@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
+import androidx.navigation.NavHostController
 import com.aaditx23.wallpaperwizard.backend.models.ScheduleModel
 import com.aaditx23.wallpaperwizard.backend.viewmodels.ScheduleVM
 import com.aaditx23.wallpaperwizard.components.scheduler.WallpaperScheduler
@@ -39,7 +40,8 @@ import kotlinx.coroutines.withContext
 fun Schedule(
     schedule: ScheduleModel,
     schedulevm: ScheduleVM,
-    wallpaperScheduler: WallpaperScheduler
+    wallpaperScheduler: WallpaperScheduler,
+    navController: NavHostController
 ){
     var prevHomeScreen by remember { mutableStateOf<Bitmap?>(null) }
     var prevLockScreen by remember { mutableStateOf<Bitmap?>(null) }
@@ -56,8 +58,13 @@ fun Schedule(
     val context = LocalContext.current
     val cardWidth = 100
     val id = schedule._id.toHexString()
+    var status by remember { mutableStateOf("") }
     LaunchedEffect(schedule) {
         scope.launch {
+            val temp_id = getPref(context, "schedule_id")
+            if(temp_id == id){
+                status = getPref(context, "schedule_status")
+            }
             val dirList = listSubfolders(context, "schedule")
             if(!dirList.contains(id)){
                 createFolder(context, "schedule/$id")
@@ -80,22 +87,35 @@ fun Schedule(
                 }
             }
             println(listSubfolders(context, "schedule"))
+            schedule.startTime?.let {
+                startTime = it
+                startTime12H = to12HourString(it)
+            }
+            schedule.endTime?.let {
+                endTime = it
+                endTime12H = to12HourString(it)
+            }
+            if(prevHomeScreen == null && status != "started" && status != "scheduled"){
+                getCurrentDrawable(context, 0)?.let {
+                    prevHomeScreen = it.toBitmap()
+                    saveImage(context, it.toBitmap(), "schedule/$id", "prevHome")
+                }
+            }
+            status = getPref(context, "schedule_status")
+            println("Status from prefs $status")
+            schedulevm.setRunning(schedule._id, status)
             isLoading = false
         }
     }
     LaunchedEffect(showLockScreen) {
         scope.launch{
             isLoading = true
-            if(prevHomeScreen == null){
-                getCurrentDrawable(context, 0)?.let {
-                    prevHomeScreen = it.toBitmap()
-                    saveImage(context, it.toBitmap(), "schedule/$id", "prevHome")
-                }
-            }
             if(showLockScreen){
-                getCurrentDrawable(context, 1)?.let {
-                    prevLockScreen = it.toBitmap()
-                    saveImage(context, it.toBitmap(), "schedule/$id", "prevLock")
+                if(prevLockScreen == null){
+                    getCurrentDrawable(context, 1)?.let {
+                        prevLockScreen = it.toBitmap()
+                        saveImage(context, it.toBitmap(), "schedule/$id", "prevLock")
+                    }
                 }
             }
             else{
@@ -125,6 +145,29 @@ fun Schedule(
             isLoading = false
         }
     }
+
+    println("Status $status")
+    fun clear(){
+        scope.launch{
+            deleteFolder(context, "schedule/$id")
+            val dirList =
+                listSubfolders(context, "schedule")
+            if (!dirList.contains(id)) {
+                createFolder(context, "schedule/$id")
+            }
+            startTime = emptyTime
+            endTime = emptyTime
+            startTime12H = emptyTime
+            endTime12H = emptyTime
+            prevHomeScreen = null
+            prevLockScreen = null
+            selectedHomeScreen = null
+            selectedLockScreen = null
+            schedulevm.setStartTime(schedule._id, emptyTime)
+            schedulevm.setEndTime(schedule._id, emptyTime)
+        }
+    }
+
     if(isLoading){
         CircularLoadingBasic("Loading...")
     }
@@ -240,13 +283,16 @@ fun Schedule(
 //                        ) { i ->
 //                            daySelected.add(i)
 //                        }
-                                LockToggle(
-                                    hasLock = showLockScreen,
-                                    set = { toggle ->
-                                        showLockScreen = toggle
+                                Row{
+                                    LockToggle(
+                                        hasLock = showLockScreen,
+                                        set = { toggle ->
+                                            showLockScreen = toggle
 
-                                    }
-                                )
+                                        }
+                                    )
+                                    Text(status)
+                                }
                                 Row {
                                     Column(
                                         modifier = Modifier
@@ -277,20 +323,51 @@ fun Schedule(
                                     ) {
                                         Button(
                                             onClick = {
-                                                wallpaperScheduler.scheduleAlarm(
-                                                    startTimeString = startTime,
-                                                    endTimeString = endTime
-                                                )
+                                                scope.launch{
+                                                    wallpaperScheduler.scheduleAlarm(
+                                                        startTimeString = startTime,
+                                                        endTimeString = endTime
+                                                    )
+                                                    savePref(context, "schedule_status", "scheduled")
+                                                    status = "scheduled"
+                                                    schedulevm.setRunning(schedule._id, status)
+                                                    navController.navigate("Schedule")
+                                                }
                                             },
-                                            enabled = (startTime != emptyTime && endTime != emptyTime && selectedHomeScreen != null && !showLockScreen)
+                                            enabled = (
+                                                    (startTime != emptyTime && endTime != emptyTime &&
+                                                            (selectedHomeScreen != null && !showLockScreen ||
+                                                                selectedHomeScreen != null && selectedLockScreen != null)
+                                                             && (status != "started") && (status != "scheduled"))
+                                                    )
                                         ) {
                                             Text("Start")
                                         }
                                         Button(
+                                            enabled = (status == "started" || status == "scheduled"),
                                             onClick = {
                                                 scope.launch{
                                                     deleteFolder(context, "schedule/$id")
-                                                    schedulevm.deleteSchedule(schedule._id)
+                                                    withContext(Dispatchers.Main){
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Cancelling, Reverting wallpapers",
+                                                            Toast.LENGTH_SHORT
+                                                        )
+                                                            .show()
+                                                    }
+                                                    prevHomeScreen?.let {
+                                                        setWallpaper(context, prevHomeScreen!!, 0)
+                                                    }
+                                                    if(showLockScreen){
+                                                        prevLockScreen?.let {
+                                                            setWallpaper(context, prevLockScreen!!, 1)
+                                                        }
+                                                    }
+                                                    status = "cancelled"
+                                                    schedulevm.setRunning(schedule._id, status)
+                                                    savePref(context, "schedule_status", status)
+                                                    navController.navigate("Schedule")
                                                     wallpaperScheduler.cancelAlarm()
                                                 }
                                             }
@@ -298,28 +375,31 @@ fun Schedule(
                                             Text("Stop")
                                         }
                                         Button(
+
                                             onClick = {
                                                 scope.launch{
-                                                    deleteFolder(context, "schedule/$id")
-                                                    val dirList =
-                                                        listSubfolders(context, "schedule")
-                                                    if (!dirList.contains(id)) {
-                                                        createFolder(context, "schedule/$id")
-                                                    }
-                                                    startTime = emptyTime
-                                                    endTime = emptyTime
-                                                    startTime12H = emptyTime
-                                                    endTime12H = emptyTime
-                                                    prevHomeScreen = null
-                                                    prevLockScreen = null
-                                                    selectedHomeScreen = null
-                                                    selectedLockScreen = null
-
+                                                    clear()
                                                 }
 
                                             }
                                         ) {
                                             Text("Clear")
+                                        }
+                                        Button(
+
+                                            onClick = {
+                                                scope.launch{
+                                                    clear()
+                                                    schedulevm.deleteSchedule(schedule._id)
+                                                    deleteFolder(context, "schedule/$id")
+                                                    savePref(context, "schedule_status", "")
+                                                    savePref(context, "schedule_id", "")
+                                                    navController.navigate("Schedule")
+                                                }
+
+                                            }
+                                        ) {
+                                            Text("Delete")
                                         }
                                     }
                                 }

@@ -119,3 +119,16 @@ fun to12Hour(timePickerState: TimePickerState): String {
 
     return String.format("%02d : %02d %s", formattedHour, minute, period)
 }
+
+@SuppressLint("DefaultLocale")
+fun to12HourString(time: String): String {
+    val temp = time.split(":")
+    val hour = temp[0].trim().toInt()
+    val minute = temp[1].trim().toInt()
+
+    val period = if (hour >= 12) "PM" else "AM"
+    val formattedHour = if (hour % 12 == 0) 12 else hour % 12  // Converts hour to 12-hour format
+
+    return String.format("%02d : %02d %s", formattedHour, minute, period)
+}
+

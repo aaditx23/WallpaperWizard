@@ -7,8 +7,13 @@ import android.content.Intent
 import java.util.Calendar
 import java.text.SimpleDateFormat
 import java.util.Locale
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.State
+import com.aaditx23.wallpaperwizard.components.savePref
 
 class WallpaperScheduler(private val context: Context) {
+
+
 
     // AlarmManager for scheduling alarms
     private var alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -95,7 +100,13 @@ class WallpaperScheduler(private val context: Context) {
                 endTime.timeInMillis,
                 revertWallpaperPendingIntent
             )
+            savePref(
+                context,
+                key = "schedule_status",
+                value = "scheduled"
+                )
         }
+
     }
 
     // Function to cancel the wallpaper schedule
@@ -105,5 +116,6 @@ class WallpaperScheduler(private val context: Context) {
             alarmManager.cancel(setWallpaperPendingIntent)
             alarmManager.cancel(revertWallpaperPendingIntent)
         }
+
     }
 }

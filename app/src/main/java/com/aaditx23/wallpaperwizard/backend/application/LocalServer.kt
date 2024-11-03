@@ -1,4 +1,4 @@
-package com.aaditx23.wallpaperwizard.backend
+package com.aaditx23.wallpaperwizard.backend.application
 
 import android.app.Application
 import com.aaditx23.wallpaperwizard.backend.models.QuickSetModel
@@ -25,6 +25,7 @@ class LocalServer: Application() {
                 )
             )
         )
+        NotificationMan.initializeNotificationChannel(this)
     }
 
 }

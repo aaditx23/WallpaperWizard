@@ -1,4 +1,4 @@
-package com.aaditx23.wallpaperwizard.backend
+package com.aaditx23.wallpaperwizard.backend.application
 
 import dagger.Module
 import dagger.Provides

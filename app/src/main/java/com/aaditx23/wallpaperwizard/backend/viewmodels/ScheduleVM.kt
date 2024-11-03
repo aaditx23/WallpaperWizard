@@ -79,7 +79,7 @@ class ScheduleVM @Inject constructor(
             }
         }
     }
-    fun setRunning(id: ObjectId, running: Boolean){
+    fun setRunning(id: ObjectId, running: String){
         viewModelScope.launch {
             realm.write {
                 val schedule = query<ScheduleModel>("_id == $0", id).first().find()
@@ -101,6 +101,7 @@ class ScheduleVM @Inject constructor(
             }
         }
     }
+
 
     override fun onCleared() {
         super.onCleared()

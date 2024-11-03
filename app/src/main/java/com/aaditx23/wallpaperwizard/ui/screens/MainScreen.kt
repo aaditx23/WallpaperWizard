@@ -155,7 +155,7 @@ fun Main(){
                 composable("ScheduleCard"){
                     scheduleItem?.let {
                         wallpaperScheduler.addId(scheduleItem!!._id.toHexString())
-                        Schedule(it, schedulevm, wallpaperScheduler)
+                        Schedule(it, schedulevm, wallpaperScheduler, navController)
                     }
                 }
 //                composable("CreateAccount/{email}/{name}") { backStackEntry ->
