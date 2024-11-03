@@ -68,7 +68,7 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                         savePref(
                             context,
                             key = "schedule_status",
-                            value = "completed"
+                            value = "idle"
                         )
                         val home = JpgToBitmapAsync(
                             context,

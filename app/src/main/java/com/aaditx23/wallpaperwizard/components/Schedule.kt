@@ -13,9 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ClearAll
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.StopCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
@@ -283,16 +290,14 @@ fun Schedule(
 //                        ) { i ->
 //                            daySelected.add(i)
 //                        }
-                                Row{
-                                    LockToggle(
-                                        hasLock = showLockScreen,
-                                        set = { toggle ->
-                                            showLockScreen = toggle
 
-                                        }
-                                    )
-                                    Text(status)
-                                }
+                                LockToggle(
+                                    hasLock = showLockScreen,
+                                    set = { toggle ->
+                                        showLockScreen = toggle
+
+                                    }
+                                )
                                 Row {
                                     Column(
                                         modifier = Modifier
@@ -315,98 +320,136 @@ fun Schedule(
                                             }
                                         }
                                     }
-                                    println("Start time $startTime end time $endTime")
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(10.dp)
-                                            .fillMaxWidth()
-                                    ) {
-                                        Button(
-                                            onClick = {
-                                                scope.launch{
-                                                    wallpaperScheduler.scheduleAlarm(
-                                                        startTimeString = startTime,
-                                                        endTimeString = endTime
-                                                    )
-                                                    savePref(context, "schedule_status", "scheduled")
-                                                    status = "scheduled"
-                                                    schedulevm.setRunning(schedule._id, status)
-                                                    createNotification(
-                                                        context,
-                                                        title = "Schedule Set",
-                                                        bodyText = "Wallpapers Scheduled\nStart Time: $startTime12H\nEndTime: $endTime12H"
-                                                    )
-                                                    navController.navigate("Schedule")
-                                                }
-                                            },
-                                            enabled = (
-                                                    (startTime != emptyTime && endTime != emptyTime &&
-                                                            (selectedHomeScreen != null && !showLockScreen ||
-                                                                selectedHomeScreen != null && selectedLockScreen != null)
-                                                             && (status != "started") && (status != "scheduled"))
-                                                    )
+                                    Column{
+                                        Row(
+                                            modifier = Modifier
+                                                .padding(vertical = 10.dp)
+
                                         ) {
-                                            Text("Start")
-                                        }
-                                        Button(
-                                            enabled = (status == "started" || status == "scheduled"),
-                                            onClick = {
-                                                scope.launch{
-                                                    deleteFolder(context, "schedule/$id")
-                                                    withContext(Dispatchers.Main){
-                                                        Toast.makeText(
-                                                            context,
-                                                            "Cancelling, Reverting wallpapers",
-                                                            Toast.LENGTH_SHORT
+                                            IconButton(
+                                                onClick = {
+                                                    scope.launch {
+                                                        wallpaperScheduler.scheduleAlarm(
+                                                            startTimeString = startTime,
+                                                            endTimeString = endTime
                                                         )
-                                                            .show()
+                                                        savePref(
+                                                            context,
+                                                            "schedule_status",
+                                                            "scheduled"
+                                                        )
+                                                        status = "scheduled"
+                                                        schedulevm.setRunning(schedule._id, status)
+                                                        createNotification(
+                                                            context,
+                                                            title = "Schedule Set",
+                                                            bodyText = "Wallpapers Scheduled\nStart Time: $startTime12H\nEndTime: $endTime12H"
+                                                        )
+                                                        navController.navigate("Schedule")
                                                     }
-                                                    prevHomeScreen?.let {
-                                                        setWallpaper(context, prevHomeScreen!!, 0)
-                                                    }
-                                                    if(showLockScreen){
-                                                        prevLockScreen?.let {
-                                                            setWallpaper(context, prevLockScreen!!, 1)
+                                                },
+                                                enabled = (
+                                                        (startTime != emptyTime && endTime != emptyTime &&
+                                                                (selectedHomeScreen != null && !showLockScreen ||
+                                                                        selectedHomeScreen != null && selectedLockScreen != null)
+                                                                && (status != "started") && (status != "scheduled"))
+                                                        )
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.PlayCircle,
+                                                    contentDescription = "Start"
+                                                )
+                                            }
+                                            IconButton(
+                                                enabled = (status == "started" || status == "scheduled"),
+                                                onClick = {
+                                                    scope.launch {
+//                                                    deleteFolder(context, "schedule/$id")
+                                                        withContext(Dispatchers.Main) {
+                                                            Toast.makeText(
+                                                                context,
+                                                                "Cancelling, Reverting wallpapers",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                                .show()
                                                         }
+                                                        prevHomeScreen?.let {
+                                                            setWallpaper(
+                                                                context,
+                                                                prevHomeScreen!!,
+                                                                0
+                                                            )
+                                                        }
+                                                        if (showLockScreen) {
+                                                            prevLockScreen?.let {
+                                                                setWallpaper(
+                                                                    context,
+                                                                    prevLockScreen!!,
+                                                                    1
+                                                                )
+                                                            }
+                                                        }
+                                                        status = "idle"
+                                                        schedulevm.setRunning(schedule._id, status)
+                                                        savePref(context, "schedule_status", status)
+                                                        navController.navigate("Schedule")
+                                                        wallpaperScheduler.cancelAlarm()
+                                                        createNotification(
+                                                            context,
+                                                            title = "Schedule Cancelled",
+                                                            bodyText = "Wallpapers Reverted"
+                                                        )
                                                     }
-                                                    status = "cancelled"
-                                                    schedulevm.setRunning(schedule._id, status)
-                                                    savePref(context, "schedule_status", status)
-                                                    navController.navigate("Schedule")
-                                                    wallpaperScheduler.cancelAlarm()
                                                 }
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.StopCircle,
+                                                    contentDescription = "Start"
+                                                )
                                             }
-                                        ) {
-                                            Text("Stop")
+                                            IconButton(
+
+                                                onClick = {
+                                                    scope.launch {
+                                                        clear()
+                                                    }
+
+                                                }
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.ClearAll,
+                                                    contentDescription = "Start"
+                                                )
+                                            }
+                                            IconButton(
+
+                                                onClick = {
+                                                    scope.launch {
+                                                        clear()
+                                                        schedulevm.deleteSchedule(schedule._id)
+                                                        deleteFolder(context, "schedule/$id")
+                                                        savePref(context, "schedule_status", "")
+                                                        savePref(context, "schedule_id", "")
+                                                        navController.navigate("Schedule")
+                                                    }
+
+                                                }
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Filled.DeleteForever,
+                                                    contentDescription = "Start"
+                                                )
+                                            }
                                         }
-                                        Button(
-
-                                            onClick = {
-                                                scope.launch{
-                                                    clear()
-                                                }
-
-                                            }
-                                        ) {
-                                            Text("Clear")
-                                        }
-                                        Button(
-
-                                            onClick = {
-                                                scope.launch{
-                                                    clear()
-                                                    schedulevm.deleteSchedule(schedule._id)
-                                                    deleteFolder(context, "schedule/$id")
-                                                    savePref(context, "schedule_status", "")
-                                                    savePref(context, "schedule_id", "")
-                                                    navController.navigate("Schedule")
-                                                }
-
-                                            }
-                                        ) {
-                                            Text("Delete")
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth(),
+                                            contentAlignment = Alignment.Center
+                                        ){
+                                            Text("Status: $status")
                                         }
                                     }
+
                                 }
                             }
                         }

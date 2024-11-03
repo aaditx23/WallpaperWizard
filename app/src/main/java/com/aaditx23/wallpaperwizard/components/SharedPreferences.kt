@@ -12,5 +12,5 @@ fun savePref(context: Context, key: String, value: String) {
 
 fun getPref(context: Context, key: String): String {
     val sharedPreferences = context.getSharedPreferences("WallpaperSchedulePrefs", Context.MODE_PRIVATE)
-    return sharedPreferences.getString(key, "not_found")!!
+    return sharedPreferences.getString(key, "idle")!!
 }

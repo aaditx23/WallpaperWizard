@@ -1,10 +1,13 @@
 package com.aaditx23.wallpaperwizard.ui.screens
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +27,7 @@ import com.aaditx23.wallpaperwizard.components.CircularLoadingBasic
 import com.aaditx23.wallpaperwizard.components.Schedule
 import com.aaditx23.wallpaperwizard.components.getPref
 import com.aaditx23.wallpaperwizard.components.scheduler.WallpaperScheduler
+import com.aaditx23.wallpaperwizard.components.to12HourString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -62,11 +66,17 @@ fun ScheduleScreen(
                 modifier = Modifier
                     .padding(bottom = 110.dp)
             ) {
-                items(allSchedules) { scheduleItem ->
+                itemsIndexed(allSchedules) { index, scheduleItem ->
                     var status by remember { mutableStateOf("") }
+                    var prefId by remember { mutableStateOf("") }
                     var loading by remember { mutableStateOf(true) }
                     scope.launch {
-                        status = getPref(context, "schedule_status")
+                        prefId = getPref(context, "schedule_id")
+                        status = if(prefId == scheduleItem._id.toHexString()){
+                            getPref(context, "schedule_status")
+                        } else {
+                            "idle"
+                        }
                         delay(100)
                         schedulevm.setRunning(scheduleItem._id, status)
                         loading = false
@@ -79,9 +89,27 @@ fun ScheduleScreen(
                             onClick = {
                                 passSchedule(scheduleItem)
                                 navController.navigate("ScheduleCard")
-                            }
+                            },
+                            modifier = Modifier
+                                .padding(10.dp)
                         ) {
-                            Text("${scheduleItem._id.toHexString()}     status: ${scheduleItem.running}")
+                            Column(
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .fillMaxWidth(),
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+//                                Text(index.toString())
+                                Text("Start: ${
+                                    if(scheduleItem.startTime == null) "Not set"
+                                    else to12HourString(scheduleItem.startTime!!)
+                                }")
+                                Text("End: ${
+                                    if(scheduleItem.startTime == null) "Not set"
+                                    else to12HourString(scheduleItem.endTime!!)
+                                }")
+                                Text("Status: $status")
+                            }
                         }
                     }
 
