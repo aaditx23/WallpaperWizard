@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -104,7 +105,8 @@ fun ScheduleScreen(
                                     navController.navigate("ScheduleCard")
                                 },
                                 modifier = Modifier
-                                    .padding(10.dp)
+                                    .padding(10.dp),
+                                elevation = CardDefaults.cardElevation(10.dp)
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -117,7 +119,6 @@ fun ScheduleScreen(
                                             .padding(10.dp),
                                         verticalArrangement = Arrangement.SpaceBetween
                                     ) {
-//                                Text(index.toString())
                                         Text(
                                             "Start: ${
                                                 if (scheduleItem.startTime == null) "Not set"

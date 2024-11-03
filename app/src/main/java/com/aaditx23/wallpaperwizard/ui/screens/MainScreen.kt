@@ -33,7 +33,7 @@ import com.aaditx23.wallpaperwizard.components.checkPermission
 import com.aaditx23.wallpaperwizard.components.createFolder
 import com.aaditx23.wallpaperwizard.components.listFolders
 import com.aaditx23.wallpaperwizard.components.models.BottomNavItem.Companion.bottomNavItemList
-
+import com.aaditx23.wallpaperwizard.components.multiPermissionLauncher
 
 
 import com.aaditx23.wallpaperwizard.components.permissionLauncher
@@ -54,8 +54,6 @@ fun Main(){
 
     val navController = rememberNavController()
     var scope = rememberCoroutineScope()
-    var scrollState = rememberScrollState()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     var scheduleItem by remember { mutableStateOf<ScheduleModel?>(null) }
     val context = LocalContext.current
@@ -83,29 +81,14 @@ fun Main(){
     }
 
 
-
-//    LaunchedEffect(navBackStackEntry?.destination) {
-//        when (navBackStackEntry?.destination?.route) {
-//            "Profile" -> selectedIndexDrawer = navDrawerItems.indexOfFirst { it.title == "Profile" }
-//            "About BUCC" -> selectedIndexDrawer = navDrawerItems.indexOfFirst { it.title == "About BUCC" }
-//            "About Us" -> selectedIndexDrawer = navDrawerItems.indexOfFirst { it.title == "About Us" }
-//            "Login" -> selectedIndexDrawer = navDrawerItems.indexOfFirst { it.title == "Login" }
-//            "SE Dashboard" -> selectedIndexDrawer = navDrawerItems.indexOfFirst { it.title == "SE Dashboard" }
-//            // Add other routes here if needed
-//        }
-//    }
-
     if(!checkPermission(context, permissions[0])){
         requestAllFilesAccess(context)
-    }
-    if(!checkPermission(context, permissions[1])){
-        permissionLauncher(context, permissions[1])
     }
     if(!checkPermission(context, permissions[2])){
         batteryExemptPermission(context)
     }
-    if(!checkPermission(context, permissions[3])){
-        permissionLauncher(context, permissions[3])
+    if(!checkPermission(context, permissions[1]) || !checkPermission(context, permissions[3])){
+        multiPermissionLauncher(context, listOf(permissions[1], permissions[3]))
     }
 
 
@@ -158,17 +141,6 @@ fun Main(){
                         Schedule(it, schedulevm, wallpaperScheduler, navController)
                     }
                 }
-//                composable("CreateAccount/{email}/{name}") { backStackEntry ->
-//                    val email = backStackEntry.arguments?.getString("email") ?: ""
-//                    val name = backStackEntry.arguments?.getString("name") ?: ""
-//                    Signup(
-//                        accountvm = accountvm,
-//                        email = email,
-//                        name = name,
-//                        navController = navController
-//                    )
-//                }
-
             }
         }
 

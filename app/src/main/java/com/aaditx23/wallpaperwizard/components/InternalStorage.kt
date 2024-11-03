@@ -10,7 +10,6 @@ import java.io.File
 import java.io.IOException
 
 
-val path = "/data/user/0/com.aaditx23.wallpaperwizard/files/"
 
 fun createFolder(context: Context, folderName: String): String {
     val folder = File(context.filesDir, folderName)

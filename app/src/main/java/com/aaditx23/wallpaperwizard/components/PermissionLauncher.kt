@@ -39,6 +39,29 @@ fun permissionLauncher(context: Context, permission: String): Boolean{
     return hasPermission
 }
 
+@Composable
+fun multiPermissionLauncher(context: Context, permissions: List<String>): Boolean {
+    var hasPermission by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissionsResult: Map<String, Boolean> ->
+        // Check if all permissions are granted
+        hasPermission = permissionsResult.all { it.value }
+    }
+
+    LaunchedEffect(Unit) {
+        // Check if all permissions are already granted
+        if (permissions.all { ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED }) {
+            hasPermission = true
+        } else {
+            // Request permissions
+            permissionLauncher.launch(permissions.toTypedArray())
+        }
+    }
+
+    return hasPermission
+}
 
 
 fun batteryExemptPermission(context: Context) {

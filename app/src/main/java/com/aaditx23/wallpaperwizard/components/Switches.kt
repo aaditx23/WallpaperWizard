@@ -23,26 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.aaditx23.wallpaperwizard.ui.theme.buttonThumbTint
 
-//@Composable
-//fun LockToggle(set: (Boolean) -> Unit){
-//    var check by remember { mutableStateOf(false) }
-//    Switch(
-//        checked = check,
-//        onCheckedChange = {
-//            check = it
-//            set(it)
-//        },
-//        thumbContent = {
-//            Icon(
-//                imageVector = Icons.Filled.Home,
-//                contentDescription = "Thumb",
-//                modifier = Modifier
-//                    .size(15.dp)
-//            )
-//
-//        }
-//    )
-//}
 
 @Composable
 fun LockToggle(
