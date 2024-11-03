@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.aaditx23.wallpaperwizard.backend.viewmodels.QuickSetVM
 import com.aaditx23.wallpaperwizard.components.CircularLoadingBasic
+import com.aaditx23.wallpaperwizard.components.EmptyScreenText
 import com.aaditx23.wallpaperwizard.components.QuickSetCard
 
 @Composable
@@ -42,12 +43,17 @@ fun QuickSetScreen(
             ) {
                 Text("Cropped Pictures Cache")
             }
-            LazyColumn(
-                modifier = Modifier
-                    .padding(bottom = 110.dp)
-            ) {
-                items(allQuickSets) { quickSetItem ->
-                    QuickSetCard(qsVM, quickSetItem)
+            if(allQuickSets.isEmpty()){
+                EmptyScreenText("No QuickSets")
+            }
+            else{
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(bottom = 110.dp)
+                ) {
+                    items(allQuickSets) { quickSetItem ->
+                        QuickSetCard(qsVM, quickSetItem)
+                    }
                 }
             }
         }
