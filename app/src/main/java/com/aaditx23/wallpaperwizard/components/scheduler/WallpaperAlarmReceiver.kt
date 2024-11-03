@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import com.aaditx23.wallpaperwizard.components.JpgToBitmapAsync
+import com.aaditx23.wallpaperwizard.components.createNotification
 import com.aaditx23.wallpaperwizard.components.savePref
 import com.aaditx23.wallpaperwizard.components.setWallpaper
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +50,11 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                                 Toast.makeText(context, "Could not set Lock Screen", Toast.LENGTH_SHORT).show()
                             }
                         }
+                        createNotification(
+                            context,
+                            title = "Schedule Started",
+                            bodyText = "Wallpapers Set"
+                        )
 
                     }
                 }
@@ -84,6 +90,11 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                                 Toast.makeText(context, "Could not set Lock Screen", Toast.LENGTH_SHORT).show()
                             }
                         }
+                        createNotification(
+                            context,
+                            title = "Schedule Completed",
+                            bodyText = "Wallpapers Reverted"
+                        )
 
                     }
                 }

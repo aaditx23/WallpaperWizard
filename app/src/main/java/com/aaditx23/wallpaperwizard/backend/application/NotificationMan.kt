@@ -11,11 +11,11 @@ object NotificationMan {
 
     fun initializeNotificationChannel(context: Context) {
         val notificationChannel = NotificationChannel(
-            "bucc_notification",
-            "bucc",
+            "wallpaper_wizard_notification",
+            "wallpaper_wizard",
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = "BRAC University Computer Club"
+            description = "Wallpaper Wizard"
             enableVibration(true)
             enableLights(true)
         }

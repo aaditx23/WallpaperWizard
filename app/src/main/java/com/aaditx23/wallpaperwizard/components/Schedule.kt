@@ -331,6 +331,11 @@ fun Schedule(
                                                     savePref(context, "schedule_status", "scheduled")
                                                     status = "scheduled"
                                                     schedulevm.setRunning(schedule._id, status)
+                                                    createNotification(
+                                                        context,
+                                                        title = "Schedule Set",
+                                                        bodyText = "Wallpapers Scheduled\nStart Time: $startTime12H\nEndTime: $endTime12H"
+                                                    )
                                                     navController.navigate("Schedule")
                                                 }
                                             },

@@ -1,22 +1,17 @@
 package com.aaditx23.wallpaperwizard.backend.application
 
-import android.app.Application
+
+
 import com.aaditx23.wallpaperwizard.backend.models.QuickSetModel
 import com.aaditx23.wallpaperwizard.backend.models.ScheduleModel
-import dagger.hilt.android.HiltAndroidApp
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 
-@HiltAndroidApp
-class LocalServer: Application() {
-    // register models and store it in a variable for accessing all over the application
-    companion object{
-        lateinit var realm: Realm
-    }
+object LocalServer {
+    lateinit var realm: Realm
+        private set
 
-    override fun onCreate() {
-        super.onCreate()
-
+    fun initializeRealm() {
         realm = Realm.open(
             configuration = RealmConfiguration.create(
                 schema = setOf(     // register models here
@@ -25,7 +20,5 @@ class LocalServer: Application() {
                 )
             )
         )
-        NotificationMan.initializeNotificationChannel(this)
     }
-
 }
