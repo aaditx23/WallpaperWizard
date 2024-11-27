@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -54,7 +55,8 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     var showLockScreen by remember { mutableStateOf(false) }
     var setHomeScreen by remember { mutableStateOf<Boolean?>(null) }
     var setLockScreen by remember { mutableStateOf<Boolean?>(null) }
-    var isLoading by remember { mutableStateOf(true) }
+    var isContentLoading by remember { mutableStateOf(true) }
+    var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val id = quickSetItem._id.toHexString()
@@ -77,7 +79,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                 }
             }
 //            println(listSubfolders(context, "qs"))
-            isLoading = false
+            isContentLoading = false
         }
     }
 //    println("ShowLockScreen $showLockScreen")
@@ -89,7 +91,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
-        if(isLoading){
+        if(isContentLoading){
             CircularLoadingBasic("Loading...")
         }
         else{
@@ -223,12 +225,20 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                                 }
                             }
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.PlayCircle,
-                                contentDescription = "Set Wallpaper",
-                                modifier = Modifier
-                                    .size(40.dp)
-                            )
+                            if(isLoading){
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                )
+                            }
+                            else{
+                                Icon(
+                                    imageVector = Icons.Filled.PlayCircle,
+                                    contentDescription = "Set Wallpaper",
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(20.dp))
                         IconButton(
@@ -250,35 +260,6 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun CardButton(
-    text: String,
-    buttonColor: Color,
-    textColor: Color = Color.White,
-    onClick: () -> Unit
-){
-    Card(
-        onClick = onClick,
-        shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .width(150.dp)
-            .height(50.dp),
-        colors = CardDefaults.cardColors(buttonColor)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ){
-            Text(
-                text = text,
-                color = textColor,
-                fontSize = 15.sp
-            )
         }
     }
 }
