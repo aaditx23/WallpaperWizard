@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -73,8 +74,10 @@ fun ImagePicker(
             fixAspectRatio = true
             aspectRatioX = screenX
             aspectRatioY = screenY
-            outputCompressQuality = 100
+            outputRequestWidth = screenX
+            outputRequestHeight = screenY
             outputCompressFormat = Bitmap.CompressFormat.JPEG
+            outputRequestSizeOptions = CropImageView.RequestSizeOptions.RESIZE_EXACT
         })
         cropLauncher.launch(cropOptions)
     }

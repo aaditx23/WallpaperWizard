@@ -10,12 +10,12 @@ plugins {
 
 android {
     namespace = "com.aaditx23.wallpaperwizard"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.aaditx23.wallpaperwizard"
         minSdk = 34
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "alpha_0.1"
 
@@ -72,6 +72,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
     implementation("com.google.dagger:hilt-android:2.49")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
 
 
     ksp("com.google.dagger:hilt-compiler:2.49")

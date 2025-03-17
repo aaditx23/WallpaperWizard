@@ -34,6 +34,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import com.aaditx23.wallpaperwizard.R
 
 @Composable
 fun ImageCard(
@@ -82,9 +85,19 @@ fun ImageCard(
                 contentAlignment = Alignment.Center
             ) {
                 if (selectedWallpaper != null) {
-                    Image(
-                        bitmap = selectedWallpaper!!.asImageBitmap(),
-                        contentDescription = "Current Wallpaper",
+//                    Image(
+//                        bitmap = selectedWallpaper!!.asImageBitmap(),
+//                        contentDescription = "Current Wallpaper",
+//                        modifier = Modifier
+//                            .padding(5.dp)
+//                            .clip(RoundedCornerShape(10.dp))
+//                    )
+                    AsyncImage(
+                        model = ImageRequest.Builder(context)
+                            .data(selectedWallpaper)
+                            .size(width, cardHeight)
+                            .build(),
+                        contentDescription = "current wallpaper",
                         modifier = Modifier
                             .padding(5.dp)
                             .clip(RoundedCornerShape(10.dp))

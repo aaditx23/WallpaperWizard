@@ -73,6 +73,7 @@ fun listFolders(context: Context): List<String> {
 fun listSubfolders(context: Context, folderName: String): List<String> {
     // Get the internal storage directory of the app
     val appInternalDir = context.filesDir
+    println(appInternalDir)
 
     // Create a reference to the specified folder
     val targetDir = File(appInternalDir, folderName)
