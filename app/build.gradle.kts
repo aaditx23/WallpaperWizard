@@ -73,7 +73,7 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.49")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
-    implementation("io.coil-kt.coil3:coil-compose:3.1.0")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
 
     ksp("com.google.dagger:hilt-compiler:2.49")

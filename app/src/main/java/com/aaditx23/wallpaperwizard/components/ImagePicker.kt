@@ -74,12 +74,15 @@ fun ImagePicker(
             fixAspectRatio = true
             aspectRatioX = screenX
             aspectRatioY = screenY
-            outputRequestWidth = screenX
-            outputRequestHeight = screenY
+            outputRequestWidth = screenX *2
+            outputRequestHeight = screenY*2
+            outputCompressQuality = 100
             outputCompressFormat = Bitmap.CompressFormat.JPEG
-            outputRequestSizeOptions = CropImageView.RequestSizeOptions.RESIZE_EXACT
+            outputRequestSizeOptions = CropImageView.RequestSizeOptions.RESIZE_INSIDE
         })
+
         cropLauncher.launch(cropOptions)
+
     }
 
     if (hasImagePermission){

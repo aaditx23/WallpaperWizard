@@ -52,6 +52,10 @@ import kotlinx.coroutines.withContext
 fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     var selectedHomeScreen by remember { mutableStateOf<Bitmap?>(null) }
     var selectedLockScreen by remember { mutableStateOf<Bitmap?>(null) }
+
+    var selectedHomeThumbnail by remember { mutableStateOf<Bitmap?>(null) }
+    var selectedLockThumbnail by remember { mutableStateOf<Bitmap?>(null) }
+
     var showLockScreen by remember { mutableStateOf(false) }
     var setHomeScreen by remember { mutableStateOf<Boolean?>(null) }
     var setLockScreen by remember { mutableStateOf<Boolean?>(null) }

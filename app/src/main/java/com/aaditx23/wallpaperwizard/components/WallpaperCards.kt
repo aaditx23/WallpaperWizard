@@ -34,10 +34,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import com.aaditx23.wallpaperwizard.R
 
+import com.aaditx23.wallpaperwizard.R
+import com.bumptech.glide.Glide
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
+
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ImageCard(
     setBitmap: (Bitmap) -> Unit,
@@ -92,16 +95,30 @@ fun ImageCard(
 //                            .padding(5.dp)
 //                            .clip(RoundedCornerShape(10.dp))
 //                    )
-                    AsyncImage(
-                        model = ImageRequest.Builder(context)
-                            .data(selectedWallpaper)
-                            .size(width, cardHeight)
-                            .build(),
-                        contentDescription = "current wallpaper",
+//                    AsyncImage(
+//                        model = ImageRequest.Builder(context)
+//                            .data(selectedWallpaper)
+//                            .size(width, cardHeight)
+//                            .build(),
+//                        contentDescription = "current wallpaper",
+//                        modifier = Modifier
+//                            .padding(5.dp)
+//                            .clip(RoundedCornerShape(10.dp))
+//                    )
+                    GlideImage(
+                        model = selectedWallpaper,
+                        contentDescription = "current",
                         modifier = Modifier
                             .padding(5.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                    )
+                            .clip(RoundedCornerShape(10.dp)),
+                    ){
+                        it
+                            .thumbnail(
+                                it.clone()
+                                    .load(selectedWallpaper)
+                                    .override(100, cardHeight)
+                            )
+                    }
                 }
                 Icon(
                     imageVector =
