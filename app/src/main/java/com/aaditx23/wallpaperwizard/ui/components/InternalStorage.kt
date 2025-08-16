@@ -19,31 +19,31 @@ fun createFolder(context: Context, folderName: String): String {
     return folder.absolutePath
 }
 
-fun saveImage(context: Context, bitmap: Bitmap, folderName: String, fileName: String): String? {
-    // Get the internal storage directory of the app
-    val appInternalDir = context.filesDir
-
-    // Create the target folder path
-    val folderPath = File(appInternalDir, folderName)
-
-    // Ensure the folder exists
-    if (!folderPath.exists()) {
-        folderPath.mkdirs() // Create the folder if it doesn't exist
-    }
-
-    // Create the file for the image
-    val file = File(folderPath, "$fileName.jpg")
-
-    return try {
-        file.outputStream().use { out ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
-        }
-        file.absolutePath
-    } catch (e: IOException) {
-        e.printStackTrace()
-        null
-    }
-}
+//fun saveImage(context: Context, bitmap: Bitmap, folderName: String, fileName: String): String? {
+//    // Get the internal storage directory of the app
+//    val appInternalDir = context.filesDir
+//
+//    // Create the target folder path
+//    val folderPath = File(appInternalDir, folderName)
+//
+//    // Ensure the folder exists
+//    if (!folderPath.exists()) {
+//        folderPath.mkdirs() // Create the folder if it doesn't exist
+//    }
+//
+//    // Create the file for the image
+//    val file = File(folderPath, "$fileName.jpg")
+//
+//    return try {
+//        file.outputStream().use { out ->
+//            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+//        }
+//        file.absolutePath
+//    } catch (e: IOException) {
+//        e.printStackTrace()
+//        null
+//    }
+//}
 
 fun deleteFolder(context: Context, folderName: String): Boolean {
     val folder = File(context.filesDir, folderName)

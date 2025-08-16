@@ -1,8 +1,10 @@
 package com.aaditx23.wallpaperwizard.ui.screens.Schedule
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaditx23.wallpaperwizard.models.ScheduleModel
+import com.aaditx23.wallpaperwizard.ui.components.getCroppedStoragePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
@@ -28,6 +30,14 @@ class ScheduleVM @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    var croppedDir: String = ""
+        private set
+
+    fun initCroppedDir(context: Context) {
+        val dir = getCroppedStoragePath(context)
+        println("path is: $dir")
+        croppedDir = dir
+    }
     init {
         loadSchedules()
     }
@@ -86,7 +96,73 @@ class ScheduleVM @Inject constructor(
         }
     }
 
-    // Method to delete a ScheduleModel from Realm by id
+    fun setPrevHome(id: ObjectId, name: String){
+        viewModelScope.launch {
+            realm.write {
+                val schedule = query<ScheduleModel>("_id = $0", id).first().find()
+                if(schedule != null){
+                    schedule.prevHome = name
+                }
+            }
+        }
+    }
+    fun setPrevLock(id: ObjectId, name: String){
+        viewModelScope.launch {
+            realm.write {
+                val schedule = query<ScheduleModel>("_id = $0", id).first().find()
+                if(schedule != null){
+                    schedule.prevLock = name
+                }
+            }
+        }
+    }
+    fun setScheduledHome(id: ObjectId, name: String){
+        viewModelScope.launch {
+            realm.write {
+                val schedule = query<ScheduleModel>("_id = $0", id).first().find()
+                if(schedule != null){
+                    schedule.scheduledHome = name
+                }
+            }
+        }
+    }
+    fun setScheduledLock(id: ObjectId, name: String){
+        viewModelScope.launch {
+            realm.write {
+                val schedule = query<ScheduleModel>("_id = $0", id).first().find()
+                if(schedule != null){
+                    schedule.scheduledLock = name
+                }
+            }
+        }
+    }
+    fun setRepeat(id: ObjectId, repeat: String){
+        viewModelScope.launch {
+            realm.write {
+                val schedule = query<ScheduleModel>("_id = $0", id).first().find()
+                if(schedule != null){
+                    schedule.repeat = repeat
+                }
+            }
+        }
+    }
+    fun clearSchedule(id: ObjectId){
+        viewModelScope.launch{
+            realm.write {
+                val schedule = query<ScheduleModel>("_id = $0", id).first().find()
+                if(schedule != null){
+                    schedule.prevHome= ""
+                    schedule.prevLock= ""
+                    schedule.scheduledHome= ""
+                    schedule.scheduledLock= ""
+                    schedule.startTime= "00:00"
+                    schedule.endTime= "00:00"
+                    schedule.repeat= "0000000"
+                    schedule.running= ""
+                }
+            }
+        }
+    }
     fun deleteSchedule(id: ObjectId) {
         viewModelScope.launch {
             realm.write {

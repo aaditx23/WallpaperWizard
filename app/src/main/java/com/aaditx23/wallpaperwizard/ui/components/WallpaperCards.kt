@@ -41,23 +41,21 @@ import com.bumptech.glide.integration.compose.GlideImage
 fun ImageCard(
     setImageName: (String) -> Unit,
     home: Boolean = false,
-    loadedImage: Bitmap? = null,
     loadedImageString: String = "",
     width: Int = 100,
     text: String = "",
     cardColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
-    iconTint: Color = if (loadedImage == null) MaterialTheme.colorScheme.inversePrimary
+    iconTint: Color = if (loadedImageString.isEmpty()) MaterialTheme.colorScheme.inversePrimary
                         else MaterialTheme.colorScheme.onSecondaryContainer
 ){
     val context = LocalContext.current
     val cardHeight = getHeight(context, width)
     var showImagePicker by remember { mutableStateOf(false) }
-    var selectedWallpaper by remember{ mutableStateOf<Bitmap?>(null) }
-    var selectedWallpaperString by remember{ mutableStateOf<String?>(null) }
+    var selectedWallpaperString by remember{ mutableStateOf("") }
     var iconColor by remember { mutableStateOf(iconTint) }
 
-    LaunchedEffect(loadedImage) {
-        if(loadedImageString!= "" && !loadedImageString.endsWith("/")){
+    LaunchedEffect(loadedImageString) {
+        if(loadedImageString.isNotEmpty() && !loadedImageString.endsWith("/")){
             selectedWallpaperString = loadedImageString
         }
     }
@@ -65,7 +63,7 @@ fun ImageCard(
         showImagePicker = false
     }
     if(!text.split(" ").contains("Previous")){
-        iconColor = if (selectedWallpaperString == null) MaterialTheme.colorScheme.inversePrimary
+        iconColor = if (selectedWallpaperString.isEmpty()) MaterialTheme.colorScheme.inversePrimary
         else MaterialTheme.colorScheme.onSecondaryContainer
     }
 
@@ -104,7 +102,7 @@ fun ImageCard(
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                if (selectedWallpaperString != "") {
+                if (selectedWallpaperString.isNotEmpty()) {
                     GlideImage(
                         model = loadedImageString,
                         contentDescription = null,
@@ -120,6 +118,9 @@ fun ImageCard(
                             )
                     }
                 }
+                else{
+                    CircularLoadingBasic()
+                }
                 Icon(
                     imageVector =
                     if (home) Icons.Outlined.Home
@@ -132,7 +133,7 @@ fun ImageCard(
                 )
             }
         }
-        if(text != ""){
+        if(text.isNotEmpty()){
             Text(
                 text,
                 modifier = Modifier

@@ -66,7 +66,7 @@ fun TimePicker(
 fun TimeField(
     label: String,
     text: String,
-    setTime: (String, String) -> Unit
+    setTime: (String) -> Unit
 
 ){
     var showTimePicker by remember { mutableStateOf(false) }
@@ -96,9 +96,8 @@ fun TimeField(
     if(showTimePicker){
         TimePicker(
             onConfirm = { timePicker ->
-                val temp = "${timePicker.hour}:${timePicker.minute}"
-                time = to12Hour(timePicker)
-                setTime(temp, time)
+
+                setTime("${timePicker.hour}:${timePicker.minute}")
                 showTimePicker = false
             },
             onDismiss = {

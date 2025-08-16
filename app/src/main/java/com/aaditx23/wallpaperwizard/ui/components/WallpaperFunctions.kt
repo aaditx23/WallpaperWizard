@@ -25,27 +25,6 @@ suspend fun getCurrentDrawable(
 
 
 
-@SuppressLint("ObsoleteSdkInt")
-suspend fun setWallpaper(
-    context: Context,
-    bitmap: Bitmap,
-    index: Int,
-    name: String = ""
-): Boolean = withContext(Dispatchers.IO) {
-    val wallpaperManager = WallpaperManager.getInstance(context)
-        try {
-            if(name != ""){
-                val convertedBitmap = BitmapFactory.decodeFile(name)
-                wallpaperManager.setBitmap(convertedBitmap, null, true, flags[index])
-            }
-
-            true // Success
-        } catch (e: IOException) {
-            e.printStackTrace()
-            false // Failure
-        }
-
-}
 
 @SuppressLint("ObsoleteSdkInt")
 suspend fun setWallpaper(
@@ -54,13 +33,12 @@ suspend fun setWallpaper(
     name: String = ""
 ): Boolean = withContext(Dispatchers.IO) {
     val wallpaperManager = WallpaperManager.getInstance(context)
+    val path = getCroppedStoragePath(context)
+    println("TRYING TO SET.\n Path: $path \n Name: $name")
     try {
-        if(name != ""){
-            println("File is : $name")
-            val convertedBitmap = BitmapFactory.decodeFile(name)
-            wallpaperManager.setBitmap(convertedBitmap, null, true, flags[index])
-        }
-
+        println("File is : $name")
+        val convertedBitmap = BitmapFactory.decodeFile("$path/$name")
+        wallpaperManager.setBitmap(convertedBitmap, null, true, flags[index])
         true // Success
     } catch (e: IOException) {
         e.printStackTrace()

@@ -7,12 +7,12 @@ import org.mongodb.kbson.ObjectId
 
 class ScheduleModel: RealmObject{
     @PrimaryKey var _id: ObjectId = BsonObjectId()
-    var currentHome: String = ""
-    var currentLock: String = ""
+    var prevHome: String = ""
+    var prevLock: String = ""
     var scheduledHome: String = ""
     var scheduledLock: String = ""
-    var startTime: String? = null
-    var endTime: String? = null
+    var startTime: String = "00:00"
+    var endTime: String = "00:00"
     var repeat: String = "0000000"
     var running: String = ""
 

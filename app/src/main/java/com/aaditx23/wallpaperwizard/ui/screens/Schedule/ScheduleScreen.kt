@@ -117,14 +117,14 @@ fun ScheduleScreen(
                                     ) {
                                         Text(
                                             "Start: ${
-                                                if (scheduleItem.startTime == null) "Not set"
-                                                else to12HourString(scheduleItem.startTime!!)
+                                                if (scheduleItem.startTime == "00:00") "Not set"
+                                                else to12HourString(scheduleItem.startTime)
                                             }"
                                         )
                                         Text(
                                             "End: ${
-                                                if (scheduleItem.startTime == null) "Not set"
-                                                else to12HourString(scheduleItem.endTime!!)
+                                                if (scheduleItem.startTime == "00:00") "Not set"
+                                                else to12HourString(scheduleItem.endTime)
                                             }"
                                         )
                                         Text("Status: $status")
@@ -133,7 +133,6 @@ fun ScheduleScreen(
                                         onClick = {
                                             scope.launch {
                                                 schedulevm.deleteSchedule(scheduleItem._id)
-                                                deleteFolder(context, "schedule/$prefId")
                                                 savePref(context, "schedule_status", "")
                                                 savePref(context, "schedule_id", "")
                                             }
