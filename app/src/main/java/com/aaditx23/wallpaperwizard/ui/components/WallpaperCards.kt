@@ -55,10 +55,9 @@ fun ImageCard(
     var selectedWallpaper by remember{ mutableStateOf<Bitmap?>(null) }
     var selectedWallpaperString by remember{ mutableStateOf<String?>(null) }
     var iconColor by remember { mutableStateOf(iconTint) }
-    val path = getCroppedStoragePath(context)
 
     LaunchedEffect(loadedImage) {
-        if(loadedImageString!= ""){
+        if(loadedImageString!= "" && !loadedImageString.endsWith("/")){
             selectedWallpaperString = loadedImageString
         }
     }
@@ -78,7 +77,8 @@ fun ImageCard(
                     RecentImages(
                         onImagePicked = {name ->
                             setBitmap(name)
-
+                            selectedWallpaperString = name
+                            showImagePicker = false
                         }
                     )
                 }
@@ -104,10 +104,10 @@ fun ImageCard(
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                if (selectedWallpaperString != null) {
+                if (selectedWallpaperString != "") {
                     GlideImage(
-                        model = "$path/$loadedImageString",
-                        contentDescription = "current",
+                        model = loadedImageString,
+                        contentDescription = null,
                         modifier = Modifier
                             .padding(5.dp)
                             .clip(RoundedCornerShape(10.dp)),
@@ -144,11 +144,4 @@ fun ImageCard(
         }
     }
 
-//    if (showImagePicker ){
-//        ImagePicker { image, name ->
-//            selectedWallpaper = image
-//            setBitmap(image, name)
-//            showImagePicker = false
-//        }
-//    }
 }

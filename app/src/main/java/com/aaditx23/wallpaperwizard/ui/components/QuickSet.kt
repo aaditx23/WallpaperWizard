@@ -40,8 +40,6 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
-    var selectedHomeScreen by remember { mutableStateOf<Bitmap?>(null) }
-    var selectedLockScreen by remember { mutableStateOf<Bitmap?>(null) }
 
     var selectedHomeString by remember { mutableStateOf<String?>(null) }
     var selectedLockString by remember { mutableStateOf<String?>(null) }
@@ -54,31 +52,18 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val id = quickSetItem._id.toHexString()
-    val path = getCroppedStoragePath(context)
-    var showPicker by remember { mutableStateOf(false) }
+    val path = qsVM.croppedDir
 
-    LaunchedEffect(quickSetItem) {
-        scope.launch {
-            val dirList = listSubfolders(context, "qs")
-            if(!dirList.contains(id)){
-                createFolder(context, "qs/$id")
-            }
-            else{
-                val fileList = listFilesIn(context, "qs/$id")
-//                println(fileList)
-                if(fileList.contains("home.jpg")){
-                    selectedHomeScreen = JpgToBitmapAsync(context, "qs/$id/home.jpg")
-                }
-                if(fileList.contains("lock.jpg")){
-                    selectedLockScreen = JpgToBitmapAsync(context, "qs/$id/lock.jpg")
-                    showLockScreen = true
-                }
-            }
-//            println(listSubfolders(context, "qs"))
-            isContentLoading = false
-        }
+    LaunchedEffect(quickSetItem, selectedHomeString, selectedLockString) {
+
+        println("Loading triggered")
+        isContentLoading = true
+        showLockScreen = quickSetItem.lock != ""
+        selectedHomeString =quickSetItem.home
+        selectedLockString = quickSetItem.lock
+        isContentLoading = false
+
     }
-//    println("ShowLockScreen $showLockScreen")
 
     ElevatedCard(
         onClick = {},
@@ -104,7 +89,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                         hasLock = showLockScreen,
                         set = { toggle ->
                             showLockScreen = toggle
-                            if (!toggle && selectedLockScreen != null) {
+                            if (!toggle && selectedLockString != "") {
                                 scope.launch {
                                     qsVM.removeLockScreen(quickSetItem._id)
                                     withContext(Dispatchers.Main) {
@@ -114,7 +99,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     }
-                                    selectedLockScreen = null
+                                    selectedLockString = ""
                                 }
 
                             }
@@ -133,15 +118,16 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
 
                         },
                         home = true,
-                        loadedImageString = quickSetItem.home
+                        loadedImageString = "$path/${selectedHomeString!!}"
                     )
                     if (showLockScreen) {
                         ImageCard(
                             setBitmap = {name ->
+                                println("Selected lock screen $name")
                                 selectedLockString = name
                                 qsVM.addLockScreen(quickSetItem._id, name)
                             },
-                            loadedImageString = quickSetItem.lock
+                            loadedImageString = "$path/${selectedLockString!!}"
                         )
                     }
 

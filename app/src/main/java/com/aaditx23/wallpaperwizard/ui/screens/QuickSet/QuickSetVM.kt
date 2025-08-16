@@ -1,8 +1,10 @@
 package com.aaditx23.wallpaperwizard.ui.screens.QuickSet
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaditx23.wallpaperwizard.models.QuickSetModel
+import com.aaditx23.wallpaperwizard.ui.components.getCroppedStoragePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
@@ -25,6 +27,14 @@ class QuickSetVM @Inject constructor(
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    var croppedDir: String = ""
+        private set
+
+    fun initCroppedDir(context: Context) {
+        val dir = getCroppedStoragePath(context)
+        croppedDir = dir
+    }
 
     init {
         loadQuickSets()

@@ -68,6 +68,7 @@ fun Main(){
 
     LaunchedEffect(Unit) {
         scope.launch {
+            qsVM.initCroppedDir(context)
             val dir = listFolders(context)
             if(!dir.contains("qs")){
                 createFolder(context, "qs")
