@@ -6,11 +6,11 @@
       <GradleProjectSettings>
         <option name="testRunner" value="CHOOSE_PER_TEST" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="#GRADLE_LOCAL_JAVA_HOME" />
+        <option name="gradleJvm" value="21" />
         <option name="modules">
           <set>
-            <option value="/Users/aaditx23/Work/Programming/Android/WallpaperWizard" />
-            <option value="/Users/aaditx23/Work/Programming/Android/WallpaperWizard/app" />
+            <option value="/mnt/work/Programming/Android/WallpaperWizard" />
+            <option value="/mnt/work/Programming/Android/WallpaperWizard/app" />
           </set>
         </option>
       </GradleProjectSettings>

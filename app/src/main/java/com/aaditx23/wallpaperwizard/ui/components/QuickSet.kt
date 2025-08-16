@@ -1,6 +1,5 @@
 package com.aaditx23.wallpaperwizard.ui.components
 
-import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,21 +46,16 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     var showLockScreen by remember { mutableStateOf(false) }
     var setHomeScreen by remember { mutableStateOf<Boolean?>(null) }
     var setLockScreen by remember { mutableStateOf<Boolean?>(null) }
-    var isContentLoading by remember { mutableStateOf(true) }
     var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val id = quickSetItem._id.toHexString()
     val path = qsVM.croppedDir
 
-    LaunchedEffect(quickSetItem, selectedHomeString, selectedLockString) {
+    LaunchedEffect(quickSetItem) {
 
-        println("Loading triggered")
-        isContentLoading = true
         showLockScreen = quickSetItem.lock != ""
-        selectedHomeString =quickSetItem.home
-        selectedLockString = quickSetItem.lock
-        isContentLoading = false
+
 
     }
 
@@ -72,173 +66,163 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(10.dp)
     ) {
-        if(isContentLoading){
-            CircularLoadingBasic("Loading...")
-        }
-        else{
-            Column(
+        Column(
+            modifier = Modifier
+        ) {
+
+            Box(
                 modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter
             ) {
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    LockToggle(
-                        hasLock = showLockScreen,
-                        set = { toggle ->
-                            showLockScreen = toggle
-                            if (!toggle && selectedLockString != "") {
-                                scope.launch {
-                                    qsVM.removeLockScreen(quickSetItem._id)
-                                    withContext(Dispatchers.Main) {
-                                        Toast.makeText(
-                                            context,
-                                            "Deleted Lock Screen for $id",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                    selectedLockString = ""
+                LockToggle(
+                    hasLock = showLockScreen,
+                    set = { toggle ->
+                        showLockScreen = toggle
+                        if (!toggle && quickSetItem.lock != "") {
+                            scope.launch {
+                                qsVM.removeLockScreen(quickSetItem._id)
+                                withContext(Dispatchers.Main) {
+                                    Toast.makeText(
+                                        context,
+                                        "Deleted Lock Screen for $id",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
-
                             }
+
                         }
+                    }
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ImageCard(
+                    setImageName = { name ->
+                        qsVM.addHomeScreen(quickSetItem._id, name)
+
+                    },
+                    home = true,
+                    loadedImageString = "$path/${quickSetItem.home}"
+                )
+                if (showLockScreen) {
+                    ImageCard(
+                        setImageName = { name ->
+                            println("Selected lock screen $name")
+                            qsVM.addLockScreen(quickSetItem._id, name)
+                        },
+                        loadedImageString = "$path/${quickSetItem.lock}"
                     )
                 }
-                Row(
+
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                        .padding(10.dp)
+                        .height(200.dp),
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    ImageCard(
-                        setBitmap = {name ->
-                            selectedHomeString = name
-                            qsVM.addHomeScreen(quickSetItem._id, name)
-
-                        },
-                        home = true,
-                        loadedImageString = "$path/${selectedHomeString!!}"
-                    )
-                    if (showLockScreen) {
-                        ImageCard(
-                            setBitmap = {name ->
-                                println("Selected lock screen $name")
-                                selectedLockString = name
-                                qsVM.addLockScreen(quickSetItem._id, name)
-                            },
-                            loadedImageString = "$path/${selectedLockString!!}"
-                        )
-                    }
-
-                    Column(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .height(200.dp),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        IconButton(
-                            onClick = {
-                                scope.launch {
-                                    isLoading = true
-                                    if (selectedHomeString != null) {
-                                        setHomeScreen = async {
-                                            setWallpaper(
-                                                context = context,
-                                                name = "$path/${selectedHomeString!!}",
-                                                index = 0
-                                            )
-                                        }.await()
-                                    }
-                                    if(selectedLockString != null){
-                                        setLockScreen = async {
-                                            setWallpaper(
-                                                context = context,
-                                                name = "$path/${selectedLockString!!}",
-                                                index = 1
-                                            )
-                                        }.await()
-                                    }
-                                    isLoading = false
-
-                                    if (setHomeScreen != null) {
-                                        if(setHomeScreen!!){
-                                            withContext(Dispatchers.Main){
-                                                Toast.makeText(
-                                                    context,
-                                                    "Home Screen Wallpaper set successfully",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                        else {
-                                            withContext(Dispatchers.Main){
-                                                Toast.makeText(
-                                                    context,
-                                                    "There was an error setting Home Screen wallpapers",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                        setHomeScreen = null
-                                    }
-                                    if (setLockScreen != null) {
-                                        if(setLockScreen!!){
-                                            withContext(Dispatchers.Main){
-                                                Toast.makeText(
-                                                    context,
-                                                    "Lock Screen Wallpaper set successfully",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                        else {
-                                            withContext(Dispatchers.Main){
-                                                Toast.makeText(
-                                                    context,
-                                                    "There was an error setting Lock screen wallpaper",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                        setLockScreen = null
-                                    }
-
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                isLoading = true
+                                if (quickSetItem.home != "") {
+                                    setHomeScreen = async {
+                                        setWallpaper(
+                                            context = context,
+                                            name = "$path/${quickSetItem.home}",
+                                            index = 0
+                                        )
+                                    }.await()
                                 }
-                            }
-                        ) {
-                            if(isLoading){
-                                CircularProgressIndicator(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                )
-                            }
-                            else{
-                                Icon(
-                                    imageVector = Icons.Filled.PlayCircle,
-                                    contentDescription = "Set Wallpaper",
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                )
+                                if(quickSetItem.lock != ""){
+                                    setLockScreen = async {
+                                        setWallpaper(
+                                            context = context,
+                                            name = "$path/${quickSetItem.lock}",
+                                            index = 1
+                                        )
+                                    }.await()
+                                }
+                                isLoading = false
+
+                                if (setHomeScreen != null) {
+                                    if(setHomeScreen!!){
+                                        withContext(Dispatchers.Main){
+                                            Toast.makeText(
+                                                context,
+                                                "Home Screen Wallpaper set successfully",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                    else {
+                                        withContext(Dispatchers.Main){
+                                            Toast.makeText(
+                                                context,
+                                                "There was an error setting Home Screen wallpapers",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                    setHomeScreen = null
+                                }
+                                if (setLockScreen != null) {
+                                    if(setLockScreen!!){
+                                        withContext(Dispatchers.Main){
+                                            Toast.makeText(
+                                                context,
+                                                "Lock Screen Wallpaper set successfully",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                    else {
+                                        withContext(Dispatchers.Main){
+                                            Toast.makeText(
+                                                context,
+                                                "There was an error setting Lock screen wallpaper",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                    setLockScreen = null
+                                }
+
                             }
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
-                        IconButton(
-                            onClick = {
-                                scope.launch {
-                                    deleteFolder(context, "qs/$id")
-                                    qsVM.deleteQuickSet(quickSetItem._id)
-//                                println(listSubfolders(context, "qs"))
-                                }
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.DeleteForever,
-                                contentDescription = "Delete QuickSet",
+                    ) {
+                        if(isLoading){
+                            CircularProgressIndicator(
                                 modifier = Modifier
-                                    .size(50.dp)
+                                    .size(40.dp)
                             )
                         }
+                        else{
+                            Icon(
+                                imageVector = Icons.Filled.PlayCircle,
+                                contentDescription = "Set Wallpaper",
+                                modifier = Modifier
+                                    .size(40.dp)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    IconButton(
+                        onClick = {
+                            scope.launch {
+                                qsVM.deleteQuickSet(quickSetItem._id)
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.DeleteForever,
+                            contentDescription = "Delete QuickSet",
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
                     }
                 }
             }

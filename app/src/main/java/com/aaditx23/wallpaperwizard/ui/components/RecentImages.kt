@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -56,23 +58,25 @@ fun RecentImages(
         }
     }
 
-    if(fileList.isEmpty()){
-        Box(
-            modifier = Modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ){
-            Text("No Cropped Pictures in Cache")
-        }
-    }
-    else{
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LazyRow(
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+
+        if(fileList.isEmpty()){
+            Box(
                 modifier = Modifier
-                    .padding(top = 70.dp)
-            ) {
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.5f),
+                contentAlignment = Alignment.Center
+            ){
+                Text("No Cropped Pictures in Cache")
+            }
+        }
+        else{
+            LazyRow() {
                 items(fileList) { image ->
                     println("IMAGE IS: $path/$image")
                     ElevatedCard(
@@ -92,7 +96,7 @@ fun RecentImages(
                             it
                                 .thumbnail(
                                     it.clone()
-                                        .load("${getCroppedStoragePath(context)}/$image")
+                                        .load("$path/$image")
                                         .override(150)
 
                                 )
@@ -101,30 +105,31 @@ fun RecentImages(
 
                 }
             }
-
-            Button(
-                modifier = Modifier
-                    .padding(vertical = 5.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
-                onClick = { showPicker = !showPicker }
+        }
+        Button(
+            modifier = Modifier
+                .padding(vertical = 5.dp),
+            shape = RoundedCornerShape(8.dp),
+//            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.secondary),
+            onClick = { showPicker = !showPicker }
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text("Add")
-                    Icon(
-                        imageVector = Icons.Filled.AddAPhoto,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(horizontal = 5.dp)
-                            .size(16.dp),
-                    )
-                }
+                Text("Add")
+                Icon(
+                    imageVector = Icons.Filled.AddAPhoto,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(horizontal = 5.dp)
+                        .size(16.dp),
+                )
             }
         }
+
     }
+
 
     if(showPicker){
         ImagePicker { image, name ->

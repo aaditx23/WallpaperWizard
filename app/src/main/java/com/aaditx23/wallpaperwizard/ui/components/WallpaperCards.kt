@@ -39,7 +39,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ImageCard(
-    setBitmap: (String) -> Unit,
+    setImageName: (String) -> Unit,
     home: Boolean = false,
     loadedImage: Bitmap? = null,
     loadedImageString: String = "",
@@ -76,7 +76,7 @@ fun ImageCard(
                 content = {
                     RecentImages(
                         onImagePicked = {name ->
-                            setBitmap(name)
+                            setImageName(name)
                             selectedWallpaperString = name
                             showImagePicker = false
                         }
