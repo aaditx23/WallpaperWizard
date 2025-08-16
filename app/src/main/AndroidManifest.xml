@@ -10,7 +10,7 @@
 <!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>-->
 
     <application
-        android:name=".backend.application.WallpaperWizardApplication"
+        android:name=".application.WallpaperWizardApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -37,7 +37,7 @@
             android:theme="@style/Theme.AppCompat.DayNight"
             android:exported="true" />
 
-        <receiver android:name=".components.scheduler.WallpaperAlarmReceiver" />
+        <receiver android:name=".ui.components.scheduler.WallpaperAlarmReceiver" />
 
 
     </application>
