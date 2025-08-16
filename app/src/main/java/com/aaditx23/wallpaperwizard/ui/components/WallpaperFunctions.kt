@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import java.io.IOException
 
 val flags = listOf(
@@ -28,10 +29,16 @@ suspend fun getCurrentDrawable(
 suspend fun setWallpaper(
     context: Context,
     bitmap: Bitmap,
-    index: Int): Boolean = withContext(Dispatchers.IO) {
+    index: Int,
+    name: String = ""
+): Boolean = withContext(Dispatchers.IO) {
     val wallpaperManager = WallpaperManager.getInstance(context)
         try {
-            wallpaperManager.setBitmap(bitmap, null, true, flags[index])
+            if(name != ""){
+                val convertedBitmap = BitmapFactory.decodeFile(name)
+                wallpaperManager.setBitmap(convertedBitmap, null, true, flags[index])
+            }
+
             true // Success
         } catch (e: IOException) {
             e.printStackTrace()
@@ -39,3 +46,26 @@ suspend fun setWallpaper(
         }
 
 }
+
+@SuppressLint("ObsoleteSdkInt")
+suspend fun setWallpaper(
+    context: Context,
+    index: Int,
+    name: String = ""
+): Boolean = withContext(Dispatchers.IO) {
+    val wallpaperManager = WallpaperManager.getInstance(context)
+    try {
+        if(name != ""){
+            println("File is : $name")
+            val convertedBitmap = BitmapFactory.decodeFile(name)
+            wallpaperManager.setBitmap(convertedBitmap, null, true, flags[index])
+        }
+
+        true // Success
+    } catch (e: IOException) {
+        e.printStackTrace()
+        false // Failure
+    }
+
+}
+

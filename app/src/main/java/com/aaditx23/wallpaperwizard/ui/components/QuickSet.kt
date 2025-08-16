@@ -43,8 +43,8 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     var selectedHomeScreen by remember { mutableStateOf<Bitmap?>(null) }
     var selectedLockScreen by remember { mutableStateOf<Bitmap?>(null) }
 
-    var selectedHomeThumbnail by remember { mutableStateOf<Bitmap?>(null) }
-    var selectedLockThumbnail by remember { mutableStateOf<Bitmap?>(null) }
+    var selectedHomeString by remember { mutableStateOf<String?>(null) }
+    var selectedLockString by remember { mutableStateOf<String?>(null) }
 
     var showLockScreen by remember { mutableStateOf(false) }
     var setHomeScreen by remember { mutableStateOf<Boolean?>(null) }
@@ -54,6 +54,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val id = quickSetItem._id.toHexString()
+    val path = getCroppedStoragePath(context)
     var showPicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(quickSetItem) {
@@ -127,7 +128,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                 ) {
                     ImageCard(
                         setBitmap = {name ->
-//                            selectedHomeScreen = image
+                            selectedHomeString = name
                             qsVM.addHomeScreen(quickSetItem._id, name)
 
                         },
@@ -137,7 +138,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     if (showLockScreen) {
                         ImageCard(
                             setBitmap = {name ->
-//                                selectedLockScreen = image
+                                selectedLockString = name
                                 qsVM.addLockScreen(quickSetItem._id, name)
                             },
                             loadedImageString = quickSetItem.lock
@@ -154,20 +155,20 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                             onClick = {
                                 scope.launch {
                                     isLoading = true
-                                    if (selectedHomeScreen != null) {
+                                    if (selectedHomeString != null) {
                                         setHomeScreen = async {
                                             setWallpaper(
                                                 context = context,
-                                                bitmap = selectedHomeScreen!!,
+                                                name = "$path/${selectedHomeString!!}",
                                                 index = 0
                                             )
                                         }.await()
                                     }
-                                    if(selectedLockScreen != null){
+                                    if(selectedLockString != null){
                                         setLockScreen = async {
                                             setWallpaper(
                                                 context = context,
-                                                bitmap = selectedLockScreen!!,
+                                                name = "$path/${selectedLockString!!}",
                                                 index = 1
                                             )
                                         }.await()
