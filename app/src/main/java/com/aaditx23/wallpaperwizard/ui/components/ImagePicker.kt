@@ -22,11 +22,12 @@ import com.canhub.cropper.CropImageView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.InputStream
 
 @Composable
 fun ImagePicker(
-    onImagePicked: (image: Bitmap) -> Unit
+    onImagePicked: (image: Bitmap, name: String) -> Unit
 ){
     println("Launching")
     var selectedImageBitmap by remember {
@@ -39,6 +40,7 @@ fun ImagePicker(
     val context = LocalContext.current
     var hasImagePermission by remember{ mutableStateOf(false) }
     val permission = Manifest.permission.READ_MEDIA_IMAGES
+    val fileName = "cropped_${System.currentTimeMillis()}.jpg"
 
     hasImagePermission = permissionLauncher(
         context = context,
@@ -53,8 +55,9 @@ fun ImagePicker(
         if (result.isSuccessful){
             val selectedImageUri = result.uriContent
             val bitmap = createBitmapFromUri(context, selectedImageUri!!)
+
             selectedImageBitmap = bitmap
-            onImagePicked(bitmap)
+            onImagePicked(bitmap, fileName)
         } else {
             Toast.makeText(context, "An Error occurred while cropping", Toast.LENGTH_SHORT).show()
             println("${result.error}")
@@ -73,6 +76,7 @@ fun ImagePicker(
             outputCompressQuality = 100
             outputCompressFormat = Bitmap.CompressFormat.JPEG
             outputRequestSizeOptions = CropImageView.RequestSizeOptions.RESIZE_INSIDE
+            customOutputUri = createCropDestinationUri(context, fileName)
         })
 
         cropLauncher.launch(cropOptions)
@@ -86,6 +90,16 @@ fun ImagePicker(
             launcher.launch(("image/*"))
         }
     }
+}
+
+fun createCropDestinationUri(context: Context, name: String): Uri {
+    val externalDir = context.getExternalFilesDir(null)
+    val folderPath = File(externalDir, "Pictures")
+
+
+    val file = File(folderPath, name)
+
+    return Uri.fromFile(file)
 }
 
 private fun getScreenMetrics(context: Context): List<Int>  {

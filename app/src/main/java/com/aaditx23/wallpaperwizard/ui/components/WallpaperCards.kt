@@ -39,9 +39,10 @@ import com.bumptech.glide.integration.compose.GlideImage
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun ImageCard(
-    setBitmap: (Bitmap) -> Unit,
+    setBitmap: (String) -> Unit,
     home: Boolean = false,
     loadedImage: Bitmap? = null,
+    loadedImageString: String = "",
     width: Int = 100,
     text: String = "",
     cardColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -52,18 +53,38 @@ fun ImageCard(
     val cardHeight = getHeight(context, width)
     var showImagePicker by remember { mutableStateOf(false) }
     var selectedWallpaper by remember{ mutableStateOf<Bitmap?>(null) }
+    var selectedWallpaperString by remember{ mutableStateOf<String?>(null) }
     var iconColor by remember { mutableStateOf(iconTint) }
+    val path = getCroppedStoragePath(context)
+
     LaunchedEffect(loadedImage) {
-        if(loadedImage!= null){
-            selectedWallpaper = loadedImage
+        if(loadedImageString!= ""){
+            selectedWallpaperString = loadedImageString
         }
     }
+    LaunchedEffect(selectedWallpaperString) {
+        showImagePicker = false
+    }
     if(!text.split(" ").contains("Previous")){
-        iconColor = if (selectedWallpaper == null) MaterialTheme.colorScheme.inversePrimary
+        iconColor = if (selectedWallpaperString == null) MaterialTheme.colorScheme.inversePrimary
         else MaterialTheme.colorScheme.onSecondaryContainer
     }
 
     Column{
+        if(showImagePicker){
+            GeneralDialog(
+                onCancel = { showImagePicker = false },
+                content = {
+                    RecentImages(
+                        onImagePicked = {name ->
+                            setBitmap(name)
+
+                        }
+                    )
+                }
+            )
+
+        }
         ElevatedCard(
             onClick = {
                 showImagePicker = true
@@ -83,26 +104,9 @@ fun ImageCard(
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                if (selectedWallpaper != null) {
-//                    Image(
-//                        bitmap = selectedWallpaper!!.asImageBitmap(),
-//                        contentDescription = "Current Wallpaper",
-//                        modifier = Modifier
-//                            .padding(5.dp)
-//                            .clip(RoundedCornerShape(10.dp))
-//                    )
-//                    AsyncImage(
-//                        model = ImageRequest.Builder(context)
-//                            .data(selectedWallpaper)
-//                            .size(width, cardHeight)
-//                            .build(),
-//                        contentDescription = "current wallpaper",
-//                        modifier = Modifier
-//                            .padding(5.dp)
-//                            .clip(RoundedCornerShape(10.dp))
-//                    )
+                if (selectedWallpaperString != null) {
                     GlideImage(
-                        model = selectedWallpaper,
+                        model = "$path/$loadedImageString",
                         contentDescription = "current",
                         modifier = Modifier
                             .padding(5.dp)
@@ -111,7 +115,7 @@ fun ImageCard(
                         it
                             .thumbnail(
                                 it.clone()
-                                    .load(selectedWallpaper)
+                                    .load(selectedWallpaperString)
                                     .override(100, cardHeight)
                             )
                     }
@@ -140,11 +144,11 @@ fun ImageCard(
         }
     }
 
-    if (showImagePicker ){
-        ImagePicker { image ->
-            selectedWallpaper = image
-            setBitmap(image)
-            showImagePicker = false
-        }
-    }
+//    if (showImagePicker ){
+//        ImagePicker { image, name ->
+//            selectedWallpaper = image
+//            setBitmap(image, name)
+//            showImagePicker = false
+//        }
+//    }
 }

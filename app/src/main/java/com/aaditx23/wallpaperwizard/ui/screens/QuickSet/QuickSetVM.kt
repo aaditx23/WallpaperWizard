@@ -44,6 +44,41 @@ class QuickSetVM @Inject constructor(
         }
     }
 
+    fun addHomeScreen(id: ObjectId, home: String){
+        viewModelScope.launch {
+            realm.write {
+                val quickset = query<QuickSetModel>("_id = $0", id).first().find()
+                if(quickset != null){
+                    quickset.home = home
+                }
+
+
+            }
+        }
+    }
+    fun addLockScreen(id: ObjectId, lock: String){
+        viewModelScope.launch {
+            realm.write {
+                val quickset = query<QuickSetModel>("_id = $0", id).first().find()
+                if(quickset != null){
+                    quickset.lock = lock
+                }
+
+
+            }
+        }
+    }
+
+    fun removeLockScreen(id: ObjectId){
+        viewModelScope.launch {
+            realm.write {
+                val quickset = query<QuickSetModel>("_id = $0", id).first().find()
+                if(quickset != null){
+                    quickset.lock = ""
+                }
+            }
+        }
+    }
 
     // Add a new QuickSetModel item with auto-incremented id
     fun create() {

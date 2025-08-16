@@ -54,6 +54,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val id = quickSetItem._id.toHexString()
+    var showPicker by remember { mutableStateOf(false) }
 
     LaunchedEffect(quickSetItem) {
         scope.launch {
@@ -92,6 +93,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
             Column(
                 modifier = Modifier
             ) {
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -103,15 +105,13 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                             showLockScreen = toggle
                             if (!toggle && selectedLockScreen != null) {
                                 scope.launch {
-                                    val result = deleteImage(context, "qs/$id/lock.jpg")
-                                    if (result) {
-                                        withContext(Dispatchers.Main) {
-                                            Toast.makeText(
-                                                context,
-                                                "Deleted Lock Screen for $id",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
+                                    qsVM.removeLockScreen(quickSetItem._id)
+                                    withContext(Dispatchers.Main) {
+                                        Toast.makeText(
+                                            context,
+                                            "Deleted Lock Screen for $id",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
                                     selectedLockScreen = null
                                 }
@@ -126,20 +126,21 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     horizontalArrangement = Arrangement.Center
                 ) {
                     ImageCard(
-                        setBitmap = { image ->
-                            selectedHomeScreen = image
-                            saveImage(context, image, "qs/$id", "home")
+                        setBitmap = {name ->
+//                            selectedHomeScreen = image
+                            qsVM.addHomeScreen(quickSetItem._id, name)
+
                         },
                         home = true,
-                        loadedImage = selectedHomeScreen
+                        loadedImageString = quickSetItem.home
                     )
                     if (showLockScreen) {
                         ImageCard(
-                            setBitmap = { image ->
-                                selectedLockScreen = image
-                                saveImage(context, image, "qs/$id", "lock")
+                            setBitmap = {name ->
+//                                selectedLockScreen = image
+                                qsVM.addLockScreen(quickSetItem._id, name)
                             },
-                            loadedImage = selectedLockScreen
+                            loadedImageString = quickSetItem.lock
                         )
                     }
 

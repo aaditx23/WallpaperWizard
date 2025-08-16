@@ -76,7 +76,9 @@ fun PicturesDirectory(){
                         .size(50.dp)
                 )
             }
-            RecentImages(onImagePicked = {} )
+            RecentImages(onImagePicked = {name ->
+
+            } )
         }
     }
     if (result) {

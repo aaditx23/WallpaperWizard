@@ -29,6 +29,10 @@ suspend fun listFiles(context: Context, folderName: String): List<String> = with
     }
 }
 
-fun getExternalStoragePath(context: Context): String {
-    return context.getExternalFilesDir(null)?.absolutePath ?: ""
+fun getCroppedStoragePath(context: Context): String {
+    val dir = File(context.getExternalFilesDir(null), "Pictures")
+    if (!dir.exists()) {
+        dir.mkdirs() // ✅ make sure it exists
+    }
+    return dir.absolutePath
 }

@@ -192,75 +192,75 @@ fun Schedule(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         // previous home
-                        ImageCard(
-                            setBitmap = { bitmap ->
-                                prevHomeScreen = bitmap
-                                saveImage(context, bitmap, "schedule/$id", "prevHome")
-                            },
-                            home = true,
-                            loadedImage = prevHomeScreen,
-                            width = cardWidth,
-                            text = "Previous Home",
-                            cardColor = MaterialTheme.colorScheme.inversePrimary,
-                            iconTint = if (prevHomeScreen != null) MaterialTheme.colorScheme.inversePrimary
-                            else MaterialTheme.colorScheme.onSecondaryContainer
-                        )
+//                        ImageCard(
+//                            setBitmap = { bitmap, name ->
+//                                prevHomeScreen = bitmap
+//                                saveImage(context, bitmap, "schedule/$id", "prevHome")
+//                            },
+//                            home = true,
+//                            loadedImage = prevHomeScreen,
+//                            width = cardWidth,
+//                            text = "Previous Home",
+//                            cardColor = MaterialTheme.colorScheme.inversePrimary,
+//                            iconTint = if (prevHomeScreen != null) MaterialTheme.colorScheme.inversePrimary
+//                            else MaterialTheme.colorScheme.onSecondaryContainer
+//                        )
 
-                        if (showLockScreen) {
-                            // previous lock
-                            ImageCard(
-                                setBitmap = { bitmap ->
-                                    prevLockScreen = bitmap
-                                    saveImage(context, bitmap, "schedule/$id", "prevLock")
-                                },
-                                home = false,
-                                loadedImage = prevLockScreen,
-                                width = cardWidth,
-                                text = "Previous Lock",
-                                cardColor = MaterialTheme.colorScheme.inversePrimary,
-                                iconTint = if (prevLockScreen != null) MaterialTheme.colorScheme.inversePrimary
-                                else MaterialTheme.colorScheme.onSecondaryContainer
-                            )
-                        } else {
-                            // selected home
-                            ImageCard(
-                                setBitmap = { bitmap ->
-                                    selectedHomeScreen = bitmap
-                                    saveImage(context, bitmap, "schedule/$id", "selectedHome")
-                                },
-                                home = true,
-                                width = cardWidth,
-                                loadedImage = selectedHomeScreen
-                            )
-                        }
-                    }
-                    if (showLockScreen) {
-                        Row(
-                            modifier = Modifier
-                                .padding(horizontal = 50.dp)
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            // selected home
-                            ImageCard(
-                                setBitmap = { bitmap ->
-                                    selectedHomeScreen = bitmap
-                                    saveImage(context, bitmap, "schedule/$id", "selectedHome")
-                                },
-                                home = true,
-                                width = cardWidth,
-                                loadedImage = selectedHomeScreen
-                            )
-                            // selected lock
-                            ImageCard(
-                                setBitmap = { bitmap ->
-                                    selectedLockScreen = bitmap
-                                    saveImage(context, bitmap, "schedule/$id", "selectedLock")
-                                },
-                                width = cardWidth,
-                                loadedImage = selectedLockScreen
-                            )
-                        }
+//                        if (showLockScreen) {
+//                            // previous lock
+//                            ImageCard(
+//                                setBitmap = { bitmap, name ->
+//                                    prevLockScreen = bitmap
+//                                    saveImage(context, bitmap, "schedule/$id", "prevLock")
+//                                },
+//                                home = false,
+//                                loadedImage = prevLockScreen,
+//                                width = cardWidth,
+//                                text = "Previous Lock",
+//                                cardColor = MaterialTheme.colorScheme.inversePrimary,
+//                                iconTint = if (prevLockScreen != null) MaterialTheme.colorScheme.inversePrimary
+//                                else MaterialTheme.colorScheme.onSecondaryContainer
+//                            )
+//                        } else {
+//                            // selected home
+//                            ImageCard(
+//                                setBitmap = { bitmap, name ->
+//                                    selectedHomeScreen = bitmap
+//                                    saveImage(context, bitmap, "schedule/$id", "selectedHome")
+//                                },
+//                                home = true,
+//                                width = cardWidth,
+//                                loadedImage = selectedHomeScreen
+//                            )
+//                        }
+//                    }
+//                    if (showLockScreen) {
+//                        Row(
+//                            modifier = Modifier
+//                                .padding(horizontal = 50.dp)
+//                                .fillMaxWidth(),
+//                            horizontalArrangement = Arrangement.SpaceBetween
+//                        ) {
+//                            // selected home
+//                            ImageCard(
+//                                setBitmap = { bitmap, name ->
+//                                    selectedHomeScreen = bitmap
+//                                    saveImage(context, bitmap, "schedule/$id", "selectedHome")
+//                                },
+//                                home = true,
+//                                width = cardWidth,
+//                                loadedImage = selectedHomeScreen
+//                            )
+//                            // selected lock
+//                            ImageCard(
+//                                setBitmap = { bitmap, name ->
+//                                    selectedLockScreen = bitmap
+//                                    saveImage(context, bitmap, "schedule/$id", "selectedLock")
+//                                },
+//                                width = cardWidth,
+//                                loadedImage = selectedLockScreen
+//                            )
+//                        }
                     }
                     ElevatedCard(
                         modifier = Modifier
