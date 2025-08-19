@@ -33,16 +33,15 @@ suspend fun setWallpaper(
     name: String = ""
 ): Boolean = withContext(Dispatchers.IO) {
     val wallpaperManager = WallpaperManager.getInstance(context)
-    val path = getCroppedStoragePath(context)
-    println("TRYING TO SET.\n Path: $path \n Name: $name")
+    println("TRYING TO SET.\nName: $name")
     try {
         println("File is : $name")
-        val convertedBitmap = BitmapFactory.decodeFile("$path/$name")
+        val convertedBitmap = BitmapFactory.decodeFile(name)
         wallpaperManager.setBitmap(convertedBitmap, null, true, flags[index])
-        true // Success
+        true
     } catch (e: IOException) {
         e.printStackTrace()
-        false // Failure
+        false
     }
 
 }

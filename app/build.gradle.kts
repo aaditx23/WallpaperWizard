@@ -17,7 +17,7 @@ android {
         minSdk = 34
         targetSdk = 35
         versionCode = 1
-        versionName = "alpha_0.2"
+        versionName = "alpha_0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,6 +29,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

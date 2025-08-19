@@ -40,8 +40,8 @@ import kotlinx.coroutines.withContext
 @Composable
 fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
 
-    var selectedHomeString by remember { mutableStateOf<String?>(null) }
-    var selectedLockString by remember { mutableStateOf<String?>(null) }
+    var selectedHomeString by remember { mutableStateOf<String>(quickSetItem.home) }
+    var selectedLockString by remember { mutableStateOf<String>(quickSetItem.lock) }
 
     var showLockScreen by remember { mutableStateOf(false) }
     var setHomeScreen by remember { mutableStateOf<Boolean?>(null) }
@@ -60,7 +60,6 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
     }
 
     ElevatedCard(
-        onClick = {},
         modifier = Modifier
             .padding(vertical = 10.dp, horizontal = 10.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
@@ -79,7 +78,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                     hasLock = showLockScreen,
                     set = { toggle ->
                         showLockScreen = toggle
-                        if (!toggle && quickSetItem.lock != "") {
+                        if (!toggle && selectedLockString.isNotEmpty()) {
                             scope.launch {
                                 qsVM.removeLockScreen(quickSetItem._id)
                                 withContext(Dispatchers.Main) {
@@ -102,19 +101,19 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
             ) {
                 ImageCard(
                     setImageName = { name ->
+                        selectedHomeString = name
                         qsVM.addHomeScreen(quickSetItem._id, name)
-
                     },
                     home = true,
-                    loadedImageString = "$path/${quickSetItem.home}"
+                    loadedImageString = "$path/$selectedHomeString"
                 )
                 if (showLockScreen) {
                     ImageCard(
                         setImageName = { name ->
-                            println("Selected lock screen $name")
+                            selectedLockString = name
                             qsVM.addLockScreen(quickSetItem._id, name)
                         },
-                        loadedImageString = "$path/${quickSetItem.lock}"
+                        loadedImageString = "$path/$selectedLockString"
                     )
                 }
 
@@ -128,20 +127,20 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                         onClick = {
                             scope.launch {
                                 isLoading = true
-                                if (quickSetItem.home != "") {
+                                if (selectedHomeString.isNotEmpty()) {
                                     setHomeScreen = async {
                                         setWallpaper(
                                             context = context,
-                                            name = "$path/${quickSetItem.home}",
+                                            name = "$path/$selectedHomeString",
                                             index = 0
                                         )
                                     }.await()
                                 }
-                                if(quickSetItem.lock != ""){
+                                if(selectedLockString.isNotEmpty()){
                                     setLockScreen = async {
                                         setWallpaper(
                                             context = context,
-                                            name = "$path/${quickSetItem.lock}",
+                                            name = "$path/$selectedLockString",
                                             index = 1
                                         )
                                     }.await()
