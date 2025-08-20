@@ -48,7 +48,6 @@ fun ScheduleScreen(
 
     val allSchedules by schedulevm.allSchedules.collectAsState()
     val isLoading by schedulevm.isLoading.collectAsState()
-    var click by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()

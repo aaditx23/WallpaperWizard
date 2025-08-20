@@ -56,23 +56,32 @@ fun Schedule(
     var endTime by remember { mutableStateOf(schedule.endTime) }
     var showLockScreen by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(true) }
+    var isPrevHomeLoading by remember { mutableStateOf(true) }
+    var isPrevLockLoading by remember { mutableStateOf(true) }
+
+
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val cardWidth = 100
     val id = schedule._id.toHexString()
     var status by remember { mutableStateOf("idle") }
-    val path = schedulevm.croppedDir
-    println("PATH IS: $path")
+    val croppedPath = schedulevm.croppedDir
+    val prevPath = schedulevm.prevDir
+    println("PATH IS: $croppedPath\n$prevPath")
     LaunchedEffect(schedule) {
         scope.launch {
             if(getPref(context, "schedule_id") == id){
                 status = getPref(context, "schedule_status")
             }
-            if(schedule.prevHome.isEmpty() || (status != "started" && status != "scheduled")){
+            if(status != "started" && status != "scheduled"){
+                println("Updating home")
+                isPrevHomeLoading = true
                 getCurrentDrawable(context, 0)?.let {
-                    prevHomeScreen = saveImage(context, it.toBitmap(), "prevHome")
+                    prevHomeScreen = savePrev(context, it.toBitmap(), "prevHome")
                     schedulevm.setPrevHome(schedule._id, prevHomeScreen)
+
                 }
+                isPrevHomeLoading = false
             }
             status = getPref(context, "schedule_status")
             println("Status from prefs $status")
@@ -84,31 +93,28 @@ fun Schedule(
         scope.launch{
             isLoading = true
             if(showLockScreen){
-                if(schedule.prevLock.isEmpty()){
+                if(status != "started" && status != "scheduled"){
+                    isPrevLockLoading = true
                     getCurrentDrawable(context, 1)?.let {
-                        prevLockScreen = saveImage(context, it.toBitmap(), "prevLock")
+                        prevLockScreen = savePrev(context, it.toBitmap(), "prevLock")
                         schedulevm.setPrevLock(schedule._id, prevLockScreen)
                     }
+                    isPrevLockLoading = false
                 }
             }
             else{
-                if (prevLockScreen.isNotEmpty()) {
-                    scope.launch {
-                        schedulevm.setPrevLock(schedule._id, "")
-                        if(scheduledLockScreen.isNotEmpty()){
-                            schedulevm.setScheduledLock(schedule._id, "")
-                        }
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                context,
-                                "Deleted Lock Screen for $id",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        prevLockScreen = ""
-                        scheduledLockScreen = ""
-                    }
-
+                scope.launch {
+                    schedulevm.setPrevLock(schedule._id, "")
+                    schedulevm.setScheduledLock(schedule._id, "")
+                    prevLockScreen = ""
+                    scheduledLockScreen = ""
+//                    withContext(Dispatchers.Main) {
+//                        Toast.makeText(
+//                            context,
+//                            "Deleted Lock Screen for $id",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
                 }
             }
             isLoading = false
@@ -152,12 +158,14 @@ fun Schedule(
                                 schedulevm.setPrevHome(schedule._id, name)
                             },
                             home = true,
-                            loadedImageString = "$path/$prevHomeScreen",
+                            id = id,
+                            loadedImageString = "$prevPath/$prevHomeScreen",
                             width = cardWidth,
                             text = "Previous Home",
                             cardColor = MaterialTheme.colorScheme.inversePrimary,
-                            iconTint = if (schedule.prevHome.isNotEmpty()) MaterialTheme.colorScheme.inversePrimary
-                            else MaterialTheme.colorScheme.onSecondaryContainer
+                            iconTint = if (prevHomeScreen.isNotEmpty()) MaterialTheme.colorScheme.inversePrimary
+                            else MaterialTheme.colorScheme.onSecondaryContainer,
+                            loading = isPrevHomeLoading
                         )
 
                         if (showLockScreen) {
@@ -168,25 +176,28 @@ fun Schedule(
                                     schedulevm.setPrevLock(schedule._id, name)
                                 },
                                 home = false,
-                                loadedImageString = "$path/$prevLockScreen",
+                                id = id,
+                                loadedImageString = "$prevPath/$prevLockScreen",
                                 width = cardWidth,
                                 text = "Previous Lock",
                                 cardColor = MaterialTheme.colorScheme.inversePrimary,
                                 iconTint = if (prevLockScreen.isNotEmpty()) MaterialTheme.colorScheme.inversePrimary
-                                else MaterialTheme.colorScheme.onSecondaryContainer
+                                else MaterialTheme.colorScheme.onSecondaryContainer,
+                                loading = isPrevLockLoading
                             )
                         } else {
                             // selected home
                             ImageCard(
                                 setImageName = {name ->
-                                    println("NAME IS: $name $path")
+                                    println("NAME IS: $name $croppedPath")
                                     scheduledHomeScreen = name
                                     schedulevm.setScheduledHome(schedule._id, name)
                                 },
                                 home = true,
                                 width = cardWidth,
-                                loadedImageString = "$path/$scheduledHomeScreen",
-                                text = "Scheduled Home"
+                                id = id,
+                                loadedImageString = "$croppedPath/$scheduledHomeScreen",
+                                text = "Scheduled Home",
                             )
                         }
                     }
@@ -205,7 +216,8 @@ fun Schedule(
                                 },
                                 home = true,
                                 width = cardWidth,
-                                loadedImageString = "$path/$scheduledHomeScreen",
+                                id = id,
+                                loadedImageString = "$croppedPath/$scheduledHomeScreen",
                                 text = "Scheduled Home"
                             )
                             // selected lock
@@ -215,7 +227,8 @@ fun Schedule(
                                     schedulevm.setScheduledLock(schedule._id, name)
                                 },
                                 width = cardWidth,
-                                loadedImageString = "$path/$scheduledHomeScreen",
+                                id = id,
+                                loadedImageString = "$croppedPath/$scheduledHomeScreen",
                                 text = "Scheduled Lock"
                             )
                         }
@@ -326,9 +339,9 @@ fun Schedule(
                                                             )
                                                                 .show()
                                                         }
-                                                        setWallpaper(context, 0, prevHomeScreen)
+                                                        setWallpaper(context, 0, "$prevPath/$prevHomeScreen")
                                                         if (showLockScreen) {
-                                                            setWallpaper(context, 1, prevLockScreen,)
+                                                            setWallpaper(context, 1, "$prevPath/$prevLockScreen")
                                                         }
                                                         status = "idle"
                                                         schedulevm.setRunning(schedule._id, status)

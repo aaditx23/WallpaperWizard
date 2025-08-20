@@ -38,21 +38,33 @@ fun getCroppedStoragePath(context: Context): String {
     }
     return dir.absolutePath
 }
+fun getPrevStoragePath(context: Context): String {
+    val dir = File(context.getExternalFilesDir(null), "prev")
+    if (!dir.exists()) {
+        dir.mkdirs() // ✅ make sure it exists
+    }
+    return dir.absolutePath
+}
 
-fun saveImage(context: Context, bitmap: Bitmap, fileName: String): String {
-    val folderName = "Pictures"
+suspend fun savePrev(context: Context, bitmap: Bitmap, fileName: String): String {
+    val folderName = "prev"
     val externalDir = context.getExternalFilesDir(folderName) ?: return ""
 
+    println("EXTERNAL FOLDER NAME: $externalDir")
     if (!externalDir.exists()) {
         externalDir.mkdirs()
     }
 
-    val finalName = "$fileName.jpg"
+    val finalName = "${fileName}_${System.currentTimeMillis()}.jpg"
     val file = File(externalDir, finalName)
 
-    if (file.exists()) {
-        file.delete()
+    externalDir.listFiles()?.forEach { file ->
+        if (file.name.contains(fileName, ignoreCase = true)) {
+            println("Deleting ${file.name}")
+            file.delete()
+        }
     }
+
 
     return try {
         file.outputStream().use { out ->

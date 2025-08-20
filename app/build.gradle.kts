@@ -76,6 +76,7 @@ dependencies {
 
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
+    implementation("io.github.panpf.sketch4:sketch-compose:4.0.0")
 
     ksp("com.google.dagger:hilt-compiler:2.49")
 }

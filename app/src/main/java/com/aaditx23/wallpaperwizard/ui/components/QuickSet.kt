@@ -105,6 +105,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                         qsVM.addHomeScreen(quickSetItem._id, name)
                     },
                     home = true,
+                    id = id,
                     loadedImageString = "$path/$selectedHomeString"
                 )
                 if (showLockScreen) {
@@ -113,6 +114,7 @@ fun QuickSetCard(qsVM: QuickSetVM, quickSetItem: QuickSetModel) {
                             selectedLockString = name
                             qsVM.addLockScreen(quickSetItem._id, name)
                         },
+                        id = id,
                         loadedImageString = "$path/$selectedLockString"
                     )
                 }

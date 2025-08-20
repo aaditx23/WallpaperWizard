@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aaditx23.wallpaperwizard.models.ScheduleModel
 import com.aaditx23.wallpaperwizard.ui.components.getCroppedStoragePath
+import com.aaditx23.wallpaperwizard.ui.components.getPrevStoragePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.realm.kotlin.Realm
 import io.realm.kotlin.UpdatePolicy
@@ -32,11 +33,19 @@ class ScheduleVM @Inject constructor(
 
     var croppedDir: String = ""
         private set
+    var prevDir: String = ""
+        private set
 
-    fun initCroppedDir(context: Context) {
-        val dir = getCroppedStoragePath(context)
-        println("path is: $dir")
-        croppedDir = dir
+    fun initDir(context: Context) {
+        val _croppedDir = getCroppedStoragePath(context)
+        println("path is: $_croppedDir")
+        croppedDir = _croppedDir
+        val _prevDir = getPrevStoragePath(context)
+        println("path is: $_prevDir")
+        prevDir = _prevDir
+    }
+    fun initPrevDir(context: Context) {
+
     }
     init {
         loadSchedules()

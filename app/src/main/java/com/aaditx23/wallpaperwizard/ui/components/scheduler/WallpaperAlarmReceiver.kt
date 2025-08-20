@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import com.aaditx23.wallpaperwizard.models.ScheduleModel
-import com.aaditx23.wallpaperwizard.ui.components.JpgToBitmapAsync
 import com.aaditx23.wallpaperwizard.ui.components.createNotification
 import com.aaditx23.wallpaperwizard.ui.components.getCroppedStoragePath
+import com.aaditx23.wallpaperwizard.ui.components.getPrevStoragePath
 import com.aaditx23.wallpaperwizard.ui.components.savePref
 import com.aaditx23.wallpaperwizard.ui.components.setWallpaper
 import io.realm.kotlin.Realm
@@ -23,6 +23,8 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         CoroutineScope(Dispatchers.IO).launch {
             val idFromIntent = intent.getStringExtra("schedule_id")
+            val prevPath = getPrevStoragePath(context)
+            val croppedPath = getCroppedStoragePath(context)
             val realm = Realm.open(
                 RealmConfiguration.Builder(schema = setOf(ScheduleModel::class)).build()
             )
@@ -46,7 +48,7 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                             )
                             schedule?.let {
                                 if (it.scheduledHome.isNotEmpty()) {
-                                    if (setWallpaper(context, 0, it.scheduledHome)) {
+                                    if (setWallpaper(context, 0, "$croppedPath/${it.scheduledHome}")) {
                                         withContext(Dispatchers.Main){
                                             Toast.makeText(
                                                 context,
@@ -57,7 +59,7 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                                     }
                                 }
                                 if (it.scheduledLock.isNotEmpty()) {
-                                    if (setWallpaper(context, 1, it.scheduledLock)) {
+                                    if (setWallpaper(context, 1, "$croppedPath/${it.scheduledLock}")) {
                                         withContext(Dispatchers.Main){
                                             Toast.makeText(
                                                 context,
@@ -87,7 +89,7 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                             )
                             schedule?.let {
                                 if (it.prevHome.isNotEmpty()) {
-                                    if (setWallpaper(context, 0, it.prevHome)) {
+                                    if (setWallpaper(context, 0, "$prevPath/${it.prevHome}")) {
                                         withContext(Dispatchers.Main){
                                             Toast.makeText(
                                                 context,
@@ -98,7 +100,7 @@ class WallpaperAlarmReceiver : BroadcastReceiver() {
                                     }
                                 }
                                 if (it.prevLock.isNotEmpty()) {
-                                    if (setWallpaper(context, 1, it.prevLock)) {
+                                    if (setWallpaper(context, 1, "$prevPath/${it.prevLock}")) {
                                         withContext(Dispatchers.Main){
                                             Toast.makeText(
                                                 context,
