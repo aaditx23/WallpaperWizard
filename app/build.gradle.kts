@@ -17,7 +17,7 @@ android {
         minSdk = 34
         targetSdk = 35
         versionCode = 1
-        versionName = "alpha_0.2"
+        versionName = "alpha_0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,6 +29,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -67,7 +68,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.5")
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
-    implementation("io.realm.kotlin:library-base:2.0.0")
+    implementation("io.realm.kotlin:library-base:2.3.0")
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
     implementation("com.google.dagger:hilt-android:2.49")
@@ -75,6 +76,7 @@ dependencies {
 
     implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
+    implementation("io.github.panpf.sketch4:sketch-compose:4.0.0")
 
     ksp("com.google.dagger:hilt-compiler:2.49")
 }

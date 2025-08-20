@@ -3,7 +3,6 @@ package com.aaditx23.wallpaperwizard.ui.screens
 import android.Manifest
 import android.annotation.SuppressLint
 
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,24 +20,25 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 
-import androidx.navigation.compose.currentBackStackEntryAsState
-import com.aaditx23.wallpaperwizard.backend.models.ScheduleModel
-import com.aaditx23.wallpaperwizard.backend.viewmodels.QuickSetVM
-import com.aaditx23.wallpaperwizard.backend.viewmodels.ScheduleVM
-import com.aaditx23.wallpaperwizard.components.BottomNavigation
-import com.aaditx23.wallpaperwizard.components.Schedule
-import com.aaditx23.wallpaperwizard.components.batteryExemptPermission
+import com.aaditx23.wallpaperwizard.models.ScheduleModel
+import com.aaditx23.wallpaperwizard.ui.screens.QuickSet.QuickSetVM
+import com.aaditx23.wallpaperwizard.ui.screens.Schedule.ScheduleVM
+import com.aaditx23.wallpaperwizard.ui.components.BottomNavigation
+import com.aaditx23.wallpaperwizard.ui.components.Schedule
+import com.aaditx23.wallpaperwizard.ui.components.batteryExemptPermission
 
-import com.aaditx23.wallpaperwizard.components.checkPermission
-import com.aaditx23.wallpaperwizard.components.createFolder
-import com.aaditx23.wallpaperwizard.components.listFolders
-import com.aaditx23.wallpaperwizard.components.models.BottomNavItem.Companion.bottomNavItemList
-import com.aaditx23.wallpaperwizard.components.multiPermissionLauncher
+import com.aaditx23.wallpaperwizard.ui.components.checkPermission
+import com.aaditx23.wallpaperwizard.ui.components.createFolder
+import com.aaditx23.wallpaperwizard.ui.components.listFolders
+import com.aaditx23.wallpaperwizard.ui.components.models.BottomNavItem.Companion.bottomNavItemList
+import com.aaditx23.wallpaperwizard.ui.components.multiPermissionLauncher
 
 
-import com.aaditx23.wallpaperwizard.components.permissionLauncher
-import com.aaditx23.wallpaperwizard.components.requestAllFilesAccess
-import com.aaditx23.wallpaperwizard.components.scheduler.WallpaperScheduler
+import com.aaditx23.wallpaperwizard.ui.components.requestAllFilesAccess
+import com.aaditx23.wallpaperwizard.ui.components.scheduler.WallpaperScheduler
+import com.aaditx23.wallpaperwizard.ui.screens.Pictures.PicturesDirectory
+import com.aaditx23.wallpaperwizard.ui.screens.QuickSet.QuickSetScreen
+import com.aaditx23.wallpaperwizard.ui.screens.Schedule.ScheduleScreen
 import kotlinx.coroutines.launch
 
 
@@ -68,6 +68,8 @@ fun Main(){
 
     LaunchedEffect(Unit) {
         scope.launch {
+            qsVM.initCroppedDir(context)
+            schedulevm.initDir(context)
             val dir = listFolders(context)
             if(!dir.contains("qs")){
                 createFolder(context, "qs")
